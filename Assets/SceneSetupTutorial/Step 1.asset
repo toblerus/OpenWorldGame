@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b13a9641cb84d554fa0a81617c90eaa0, type: 3}
+  m_Name: Step 1
+  m_EditorClassIdentifier: 
+  title: Go to the scenes folder
+  description: "* Lorem ipsum dolor sit amet  \r\n* Consectetur adipiscing elit 
+    \r\n* Sed do eiusmod tempor incididunt ut labore  \r\n* Et dolore magna aliqua 
+    \r\n* Ut enim ad minim veniam  \r\n* Quis nostrud exercitation ullamco laboris 
+    \r\n* Nisi ut aliquip ex ea commodo consequat  \r\n* Duis aute irure dolor in
+    reprehenderit  \r\n* In voluptate velit esse cillum dolore  \r\n* Eu fugiat nulla
+    pariatur  \r\n"
+  isMainBankOnly: 0
+  isEventBankOnly: 0
+  actionType: 1
+  actionParameter: Assets/Scenes
