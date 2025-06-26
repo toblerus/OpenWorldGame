@@ -1,9 +1,13 @@
+using Inventory;
+using PanelCore;
 using UnityEngine;
 
 namespace PlayerControls
 {
     public class FirstPersonController : MonoBehaviour
     {
+        [SerializeField] private PanelService _panelService;
+        
         [Header("Movement")]
         public float moveSpeed = 5f;
         public float jumpHeight = 2f;
@@ -30,6 +34,7 @@ namespace PlayerControls
             inputActions.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
             inputActions.Player.Look.canceled += ctx => lookInput = Vector2.zero;
             inputActions.Player.Jump.performed += ctx => Jump();
+            inputActions.Player.Inventory.performed += ctx => OpenInventory();
         }
 
         private void OnEnable()
@@ -79,6 +84,18 @@ namespace PlayerControls
             if (controller.isGrounded)
             {
                 velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            }
+        }
+
+        private void OpenInventory()
+        {
+            if (_panelService.IsPanelOpen<InventoryPanelView>())
+            {
+                _panelService.ClosePanel<InventoryPanelView>();
+            }
+            else
+            {
+                _panelService.OpenPanel<InventoryPanelView>();
             }
         }
     }

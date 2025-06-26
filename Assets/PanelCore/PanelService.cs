@@ -9,45 +9,70 @@ namespace PanelCore
         [Serializable]
         public class PanelEntry
         {
-            public string Key;
             public Panel PanelPrefab;
         }
 
         [SerializeField] private List<PanelEntry> panelPrefabs;
         [SerializeField] private Transform panelParent;
 
-        private Dictionary<string, Panel> cachedPanels = new Dictionary<string, Panel>();
-        private Panel currentPanel;
+        private readonly Dictionary<Type, Panel> cachedPanels = new Dictionary<Type, Panel>();
+        private Panel _currentPanel;
 
-        public void OpenPanel(string key)
+        public void OpenPanel<T>() where T : Panel
         {
-            if (currentPanel != null)
-            {
-                currentPanel.OnClose();
-                currentPanel.gameObject.SetActive(false);
-            }
+            CloseCurrentPanel();
 
-            if (!cachedPanels.TryGetValue(key, out var panel))
+            Type panelType = typeof(T);
+
+            if (!cachedPanels.TryGetValue(panelType, out var panel))
             {
-                var prefab = panelPrefabs.Find(p => p.Key == key)?.PanelPrefab;
+                var prefab = FindPrefabOfType<T>();
                 if (prefab == null) return;
+
                 panel = Instantiate(prefab, panelParent);
-                cachedPanels[key] = panel;
+                cachedPanels[panelType] = panel;
             }
 
-            currentPanel = panel;
-            currentPanel.gameObject.SetActive(true);
-            currentPanel.OnOpen();
+            _currentPanel = panel;
+            _currentPanel.gameObject.SetActive(true);
+            _currentPanel.OnOpen();
         }
 
         public void CloseCurrentPanel()
         {
-            if (currentPanel != null)
+            if (_currentPanel != null)
             {
-                currentPanel.OnClose();
-                currentPanel.gameObject.SetActive(false);
-                currentPanel = null;
+                _currentPanel.OnClose();
+                _currentPanel.gameObject.SetActive(false);
+                _currentPanel = null;
             }
+        }
+
+        public void ClosePanel<T>() where T : Panel
+        {
+            if (_currentPanel != null && _currentPanel is T)
+            {
+                _currentPanel.OnClose();
+                _currentPanel.gameObject.SetActive(false);
+                _currentPanel = null;
+            }
+        }
+
+        public bool IsPanelOpen<T>() where T : Panel
+        {
+            return _currentPanel != null && _currentPanel is T;
+        }
+
+        private T FindPrefabOfType<T>() where T : Panel
+        {
+            foreach (var entry in panelPrefabs)
+            {
+                if (entry.PanelPrefab is T typed)
+                    return typed;
+            }
+
+            Debug.LogWarning($"No panel prefab of type {typeof(T).Name} found.");
+            return null;
         }
     }
 }
