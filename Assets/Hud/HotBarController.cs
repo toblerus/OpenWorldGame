@@ -1,18 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class HotBarController
+namespace Hud
 {
-    // Start is called before the first frame update
-    public void Setup()
+    public class HotBarController
     {
-        Debug.LogError("TEST");
-    }
+        // Start is called before the first frame update
+        public void Setup()
+        {
+            Debug.LogError("TEST");
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
+        // Update is called once per frame
+        void Update()
+        {
         
+        }
     }
 }

@@ -1,12 +1,13 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class HotBarView : MonoBehaviour
+namespace Hud
 {
-    private void Start()
+    public class HotBarView : MonoBehaviour
     {
-        var hotBarController = ServiceLocator.Resolve<HotBarController>();
-        hotBarController.Setup();
+        private void Start()
+        {
+            var hotBarController = ServiceLocator.Resolve<HotBarController>();
+            hotBarController.Setup();
+        }
     }
 }
