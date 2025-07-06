@@ -1,4 +1,6 @@
 ﻿using Hud;
+using Injection;
+using Inventory;
 using UnityEngine;
 
 namespace Installation
@@ -8,6 +10,7 @@ namespace Installation
         public void Install()
         {
             ServiceLocator.BindSingleton<HotBarController>();
+            ServiceLocator.BindTransient<InventorySlotController>();
         }
 
         public void Uninstall()

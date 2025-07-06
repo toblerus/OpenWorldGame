@@ -1,19 +1,21 @@
-using UnityEngine;
-
 namespace Hud
 {
     public class HotBarController
     {
-        // Start is called before the first frame update
-        public void Setup()
+        private HotBarView _hotBarView;
+
+        public void Setup(HotBarView hotBarView)
         {
-            Debug.LogError("TEST");
+            _hotBarView = hotBarView;
+            SetupSlots();
         }
 
-        // Update is called once per frame
-        void Update()
+        public void SetupSlots()
         {
-        
+            foreach (var slot in _hotBarView.InventorySlotViews)
+            {
+                slot.Clear();
+            }
         }
     }
 }
