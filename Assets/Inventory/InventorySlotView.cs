@@ -58,7 +58,7 @@ namespace Inventory
 
         public void OnDrop(PointerEventData eventData)
         {
-            DragManager.Instance.HandleDrop(this);
+            InventoryDragModel.Instance.HandleDrop(this);
         }
     }
 }

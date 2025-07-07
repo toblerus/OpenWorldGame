@@ -3,9 +3,9 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class DragManager : MonoBehaviour
+public class InventoryDragModel : MonoBehaviour
     {
-        public static DragManager Instance { get; private set; }
+        public static InventoryDragModel Instance { get; private set; }
 
         [SerializeField] private Canvas _canvas;
         [SerializeField] private Image _draggedIcon;
