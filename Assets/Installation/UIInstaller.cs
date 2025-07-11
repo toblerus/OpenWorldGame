@@ -16,6 +16,7 @@ namespace Installation
         public void Uninstall()
         {
             ServiceLocator.Unbind<HotBarController>();
+            ServiceLocator.Unbind<InventorySlotController>();
         }
     }
 }

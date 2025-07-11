@@ -15,7 +15,7 @@ namespace Inventory
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (View.CurrentGameItem == null) return;
-            InventoryDragModel.Instance.StartDrag(this, View.CurrentGameItem, View.CurrentAmount.ToString(), eventData.position);
+            InventoryDragModel.Instance.StartDrag(View, View.CurrentGameItem, View.CurrentAmount.ToString(), eventData.position);
             View.Clear();
         }
 
@@ -27,7 +27,7 @@ namespace Inventory
         public void OnEndDrag(PointerEventData eventData)
         {
             var target = eventData.pointerEnter?.GetComponent<InventorySlotView>();
-            InventoryDragModel.Instance.EndDrag(this, target);
+            InventoryDragModel.Instance.EndDrag(View, target);
         }
 
         public void AcceptDrop(GameItem gameItem, int amount)
