@@ -1,22 +1,23 @@
 ﻿using Hud;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace Inventory
 {
     public class InventorySlotController
     {
-        public InventorySlotView View { get; private set; }
+        private InventorySlotView _view;
 
         public void Setup(InventorySlotView view)
         {
-            View = view;   
+            _view = view;
         }
-        
+
         public void OnBeginDrag(PointerEventData eventData)
         {
-            if (View.CurrentGameItem == null) return;
-            InventoryDragModel.Instance.StartDrag(View, View.CurrentGameItem, View.CurrentAmount.ToString(), eventData.position);
-            View.Clear();
+            if (!_view.HasItem) return;
+            InventoryDragModel.Instance.StartDrag(_view, _view.CurrentGameItem, _view.CurrentAmount.ToString(), eventData.position);
+            _view.Clear();
         }
 
         public void OnDrag(PointerEventData eventData)
@@ -26,13 +27,27 @@ namespace Inventory
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            var target = eventData.pointerEnter?.GetComponent<InventorySlotView>();
-            InventoryDragModel.Instance.EndDrag(View, target);
+            // handled by slot view
         }
 
         public void AcceptDrop(GameItem gameItem, int amount)
         {
-            View.SetupGameItem(gameItem, amount);
+            _view.SetupGameItem(gameItem, amount);
         }
+
+        public void OnDropRequest()
+        {
+            if (!_view.HasItem)
+            {
+                Debug.Log("[InventorySlotController] Drop request ignored: no item to drop.");
+                return;
+            }
+
+            Debug.Log($"[InventorySlotController] Dropping item: {_view.CurrentGameItem.name}, amount: {_view.CurrentAmount}");
+            InventoryDragModel.Instance.SpawnItemDrop(_view.CurrentGameItem, _view.CurrentAmount);
+            _view.Clear();
+        }
+
+        public InventorySlotView View => _view;
     }
 }

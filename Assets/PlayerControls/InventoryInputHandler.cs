@@ -22,16 +22,21 @@ public class InventoryInputHandler : MonoBehaviour
 
     private void TryInteract()
     {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, 3f))
+        if (Camera.main != null)
         {
-            var interactable = hit.collider.GetComponent<IInteractable>();
-            interactable?.Interact(gameObject);
+            Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+            if (Physics.Raycast(ray, out RaycastHit hit, 3f))
+            {
+                Debug.Log(hit.collider.gameObject.name);
+                var interactable = hit.collider.transform.parent.GetComponent<IInteractable>();
+                interactable?.Interact(this.transform.parent.gameObject);
+            }
         }
     }
 
     private void TryDrop()
     {
+        Debug.Log("Trying to drop");
         PointerEventData pointerData = new PointerEventData(EventSystem.current)
         {
             position = Mouse.current.position.ReadValue()
@@ -42,12 +47,13 @@ public class InventoryInputHandler : MonoBehaviour
 
         foreach (var result in results)
         {
-            var slot = result.gameObject.GetComponent<InventorySlotView>();
+            Debug.Log(result.gameObject.name);
+            var slot = result.gameObject.GetComponentInParent<InventorySlotView>();
             if (slot != null && slot.CurrentGameItem != null)
             {
-                InventoryDragModel.Instance.SpawnItemDrop(slot.CurrentGameItem, slot.CurrentAmount);
-                slot.Clear();
+                slot.RequestDrop();
                 break;
             }
         }
     }
+}

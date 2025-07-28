@@ -7,7 +7,7 @@ using UnityEngine.UI;
 
 namespace Inventory
 {
-    public class InventorySlotView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+    public class InventorySlotView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private Image _itemIcon;
         [SerializeField] private TextMeshProUGUI _itemAmount;
@@ -18,6 +18,8 @@ namespace Inventory
         private int _currentAmount;
 
         private InventorySlotController _controller;
+        private static InventorySlotView _currentlyHovered;
+        public static InventorySlotView CurrentlyHovered => _currentlyHovered;
 
         private void Start()
         {
@@ -54,12 +56,32 @@ namespace Inventory
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            _controller.OnEndDrag(eventData);
+            var target = eventData.pointerEnter?.GetComponent<InventorySlotView>();
+            InventoryDragModel.Instance.EndDrag(this, target);
         }
 
         public void OnDrop(PointerEventData eventData)
         {
             InventoryDragModel.Instance.HandleDrop(this);
         }
+
+        public void RequestDrop()
+        {
+            Debug.Log($"[InventorySlotView] RequestDrop triggered on: {gameObject.name}");
+            _controller.OnDropRequest();
+        }
+
+        public void OnPointerEnter(PointerEventData eventData)
+        {
+            _currentlyHovered = this;
+        }
+
+        public void OnPointerExit(PointerEventData eventData)
+        {
+            if (_currentlyHovered == this)
+                _currentlyHovered = null;
+        }
+
+        public bool HasItem => _currentGameItem != null;
     }
 }

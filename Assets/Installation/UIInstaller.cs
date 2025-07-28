@@ -11,6 +11,7 @@ namespace Installation
         {
             ServiceLocator.BindSingleton<HotBarController>();
             ServiceLocator.BindTransient<InventorySlotController>();
+            ServiceLocator.BindTransient<ItemDropController>();
         }
 
         public void Uninstall()

@@ -1,28 +1,31 @@
-﻿using Injection;
-using Interaction;
-using Inventory;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Hud
+namespace Inventory
 {
-    public class ItemDropController : MonoBehaviour, IInteractable, IController<ItemDropView>
+    public class ItemDropController
     {
-        private ItemDropModel _model;
-        private ItemDropView _view;
-        
-        public void Interact(GameObject interactor)
+        private readonly ItemDropModel _model;
+        private readonly ItemDropView _view;
+
+        public ItemDropController(ItemDropView view, ItemDropModel model)
         {
-            var inventory = interactor.GetComponentInChildren<InventoryController>();
-            if (inventory != null)
-            {
-                inventory.AddItem(_model.Item, _model.Amount);
-                Destroy(gameObject);
-            }
+            _model = model;
+            _view = view;
+            _view.Setup(model);
         }
 
-        public void Setup(ItemDropView view)
+        public void Interact(GameObject interactor)
         {
-            _model = ServiceLocator.Resolve<ItemDropModel>();
+            InventoryController controller = interactor.GetComponentInChildren<InventoryController>();
+            if (controller != null)
+            {
+                controller.AddItem(_model.Item, _model.Amount);
+                Object.Destroy(_view.gameObject);
+            }
+            else
+            {
+                Debug.Log($"No controller found in {interactor.name}");
+            }
         }
     }
 }
