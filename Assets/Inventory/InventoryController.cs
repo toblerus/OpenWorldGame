@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Injection;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -13,29 +14,16 @@ namespace Inventory
         private InventoryModel _inventoryModel;
         [SerializeField] private List<GameItem> _defaultItems;
 
-        private void Awake()
-        {
-            _inventoryModel = new InventoryModel();
-        }
-
         private void Start()
         {
+            _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
+
+            _inventoryModel.ItemAdded.Subscribe(_ => RefreshView());
+            
             foreach (var gameItem in _defaultItems)
             {
-                AddItem(gameItem, Random.Range(0,64));
+                _inventoryModel.AddItem(gameItem, Random.Range(0,64));
             }
-        }
-
-        public void AddItem(GameItem gameItem, int amount)
-        {
-            _inventoryModel.AddItem(gameItem, amount);
-            RefreshView();
-        }
-
-        public void RemoveItem(GameItem gameItem, int amount)
-        {
-            _inventoryModel.RemoveItem(gameItem, amount);
-            RefreshView();
         }
 
         private void RefreshView()

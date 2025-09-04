@@ -11,8 +11,8 @@ namespace Inventory
 
         public void Setup(ItemDropModel model)
         {
-            
-            _controller = ServiceLocator.Resolve<ItemDropController>();
+            _controller = new ItemDropController();
+            _controller.Setup(this, model);
         }
 
         public void Interact(GameObject interactor)

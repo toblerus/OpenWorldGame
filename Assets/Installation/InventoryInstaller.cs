@@ -10,6 +10,7 @@ namespace Installation
         public void Install()
         {
             ServiceLocator.BindSingleton<ItemDropModel>();
+            ServiceLocator.BindSingleton<InventoryModel>();
             ServiceLocator.BindSingleton<ItemDropController>();
         }
 

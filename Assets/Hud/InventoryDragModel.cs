@@ -1,4 +1,6 @@
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using Injection;
 using Inventory;
 using TMPro;
 using UnityEngine;
@@ -103,7 +105,9 @@ namespace Hud
 
         public void SpawnItemDrop(GameItem item, int amount)
         {
-            var drop = Instantiate(_itemDropPrefab, transform.position + transform.forward, Quaternion.identity);
+            var model = new ItemDropModel(item, amount);
+            var view = Instantiate(_itemDropPrefab, transform.position + transform.forward, Quaternion.identity);
+            view.GetComponent<ItemDropView>().Setup(model);
         }
 
         private void ClearDrag()
