@@ -69,6 +69,8 @@ namespace PlayerControls
 
         private void HandleLook()
         {
+            if (_panelService.IsPanelOpen<InventoryPanelView>()) return;
+            
             float mouseX = lookInput.x * mouseSensitivity;
             float mouseY = lookInput.y * mouseSensitivity;
 

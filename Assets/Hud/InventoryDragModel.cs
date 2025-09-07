@@ -60,13 +60,9 @@ namespace Hud
             {
                 hoveredSlot.SetupGameItem(_draggedItem, _draggedCount);
             }
-            else if (!EventSystem.current.IsPointerOverGameObject())
+            else if(hoveredSlot == null)
             {
                 SpawnItemDrop(_draggedItem, _draggedCount);
-            }
-            else
-            {
-                sourceSlot?.SetupGameItem(_draggedItem, _draggedCount);
             }
 
             ClearDrag();
