@@ -22,6 +22,7 @@ namespace Hud
         private GameItem _draggedItem;
         private int _draggedCount;
         private bool _isDragging;
+        private InventoryModel _inventoryModel;
 
         private void Awake()
         {
@@ -29,6 +30,10 @@ namespace Hud
             _draggedIcon.transform.parent.gameObject.SetActive(false);
         }
 
+        private void Start()
+        {
+            _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
+        }
         public void StartDrag(InventorySlotView sourceSlot, GameItem item, string amountStr, Vector2 position)
         {
             _sourceSlot = sourceSlot;
@@ -101,6 +106,7 @@ namespace Hud
 
         public void SpawnItemDrop(GameItem item, int amount)
         {
+            _inventoryModel.RemoveItem(item, amount);
             var model = new ItemDropModel(item, amount);
             var view = Instantiate(_itemDropPrefab, transform.position + transform.forward, Quaternion.identity);
             view.GetComponent<ItemDropView>().Setup(model);

@@ -9,15 +9,12 @@ namespace Installation
     {
         public void Install()
         {
-            ServiceLocator.BindSingleton<ItemDropModel>();
             ServiceLocator.BindSingleton<InventoryModel>();
-            ServiceLocator.BindSingleton<ItemDropController>();
         }
 
         public void Uninstall()
         {
-            ServiceLocator.Unbind<ItemDropModel>();
-            ServiceLocator.Unbind<ItemDropController>();
+            ServiceLocator.Unbind<InventoryModel>();
         }
     }
 }
