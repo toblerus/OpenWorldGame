@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Injection;
+using Saving;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -19,11 +20,6 @@ namespace Inventory
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
 
             _inventoryModel.ItemAdded.Subscribe(_ => RefreshView());
-            
-            foreach (var gameItem in _defaultItems)
-            {
-                _inventoryModel.AddItem(gameItem, Random.Range(0,64));
-            }
         }
 
         private void RefreshView()

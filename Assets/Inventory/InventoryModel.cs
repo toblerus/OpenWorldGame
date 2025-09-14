@@ -1,15 +1,28 @@
 using System.Collections.Generic;
 using ReactiveCore;
+using Saving;
 using UnityEngine;
 
 namespace Inventory
 {
     public class InventoryModel
     {
-        private Dictionary<GameItem, int> _inventory = new Dictionary<GameItem, int>();
-        
+        private Dictionary<GameItem, int> _inventory = new();
+
         public ReactiveValue<int> ItemAdded { get; } = new();
 
+        public InventoryModel()
+        {
+            if (!ES3.KeyExists(SavegameConstants.Inventory)) return;
+            
+            var inventorySavegame = ES3.Load<Dictionary<GameItem, int>>(SavegameConstants.Inventory);
+            
+            foreach (var item in inventorySavegame)
+            {
+                AddItem(item.Key, item.Value);
+            }
+        }
+        
         public void AddItem(GameItem gameItem, int amount)
         {
             if (_inventory.ContainsKey(gameItem))
@@ -22,6 +35,7 @@ namespace Inventory
             }
 
             ItemAdded.Value++;
+            ES3.Save(SavegameConstants.Inventory, _inventory);
         }
 
         public void RemoveItem(GameItem gameItem, int amount)
@@ -32,6 +46,7 @@ namespace Inventory
             {
                 _inventory.Remove(gameItem);
             }
+            ES3.Save(SavegameConstants.Inventory, _inventory);
         }
 
         public Dictionary<GameItem, int> GetAllItems()

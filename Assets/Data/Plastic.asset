@@ -14,5 +14,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: 3
   Description: This is the third item
-  Icon: {fileID: 21300000, guid: 8ab93949ca29e4e4eaf1f934bd9740b5, type: 3}
+  Icon: {fileID: 21300000, guid: a1ffe085431f0614199f653baa7869f8, type: 3}
   MaxStack: 16
