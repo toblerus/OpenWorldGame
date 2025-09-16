@@ -1,3 +1,5 @@
+using Hud;
+using Injection;
 using Inventory;
 using PanelCore;
 using UnityEngine;
@@ -35,6 +37,7 @@ namespace PlayerControls
             inputActions.Player.Look.canceled += ctx => lookInput = Vector2.zero;
             inputActions.Player.Jump.performed += ctx => Jump();
             inputActions.Player.Inventory.performed += ctx => OpenInventory();
+            inputActions.Player.Scroll.performed += ctx => OnScroll(ctx.ReadValue<Vector2>().y);
         }
 
         private void OnEnable()
@@ -60,7 +63,7 @@ namespace PlayerControls
                 velocity.y = -2f;
             }
 
-            Vector3 move = transform.right * moveInput.x + transform.forward * moveInput.y;
+            var move = transform.right * moveInput.x + transform.forward * moveInput.y;
             controller.Move(move * moveSpeed * Time.deltaTime);
 
             velocity.y += gravity * Time.deltaTime;
@@ -71,8 +74,8 @@ namespace PlayerControls
         {
             if (_panelService.IsPanelOpen<InventoryPanelView>()) return;
             
-            float mouseX = lookInput.x * mouseSensitivity;
-            float mouseY = lookInput.y * mouseSensitivity;
+            var mouseX = lookInput.x * mouseSensitivity;
+            var mouseY = lookInput.y * mouseSensitivity;
 
             xRotation -= mouseY;
             xRotation = Mathf.Clamp(xRotation, -90f, 90f);
@@ -100,5 +103,17 @@ namespace PlayerControls
                 _panelService.OpenPanel<InventoryPanelView>();
             }
         }
+        
+        private void OnScroll(float scroll)
+        {
+            if (_panelService.IsAnyPanelOpen()) return;
+            if (Mathf.Abs(scroll) < 0.1f) return;
+
+            var direction = scroll > 0 ? -1 : 1;
+
+            var hotbar = ServiceLocator.Resolve<HotBarController>();
+            hotbar.Scroll(direction);
+        }
+
     }
 }

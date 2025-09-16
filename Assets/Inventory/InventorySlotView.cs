@@ -12,6 +12,7 @@ namespace Inventory
         [SerializeField] private Image _itemIcon;
         [SerializeField] private TextMeshProUGUI _itemAmount;
         [SerializeField] private GameItem _currentGameItem;
+        [SerializeField] private GameObject _highlight;
 
         public GameItem CurrentGameItem => _currentGameItem;
         public int CurrentAmount => _currentAmount;
@@ -83,5 +84,11 @@ namespace Inventory
         }
 
         public bool HasItem => _currentGameItem != null;
+        
+        public void Highlight(bool isActive)
+        {
+            if (_highlight != null)
+                _highlight.SetActive(isActive);
+        }
     }
 }

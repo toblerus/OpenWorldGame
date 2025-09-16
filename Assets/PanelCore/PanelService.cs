@@ -74,5 +74,11 @@ namespace PanelCore
             Debug.LogWarning($"No panel prefab of type {typeof(T).Name} found.");
             return null;
         }
+        
+        public bool IsAnyPanelOpen()
+        {
+            return _currentPanel != null;
+        }
+
     }
 }
