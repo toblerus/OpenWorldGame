@@ -11,7 +11,7 @@ namespace Inventory
 {
     public class InventoryController : MonoBehaviour
     {
-        [SerializeField] private InventoryPanelView _inventoryPanelView;
+        [SerializeField] private InventoryPanelView _view;
         private InventoryModel _inventoryModel;
         [SerializeField] private List<GameItem> _defaultItems;
 
@@ -25,7 +25,7 @@ namespace Inventory
         private void RefreshView()
         {
             var items = _inventoryModel.GetAllItems();
-            var slots = _inventoryPanelView.InventorySlotViews;
+            var slots = _view.InventorySlotViews;
 
             var index = 0;
             foreach (var kvp in items.TakeWhile(kvp => index < slots.Count))

@@ -123,7 +123,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17ac71563f1544afbf7b81c089bff518, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _inventoryPanelView: {fileID: 6977151362229800575}
+  _view: {fileID: 6977151362229800575}
   _defaultItems:
   - {fileID: 11400000, guid: 61e824c53d2f645419bd535a38e2a2b6, type: 2}
   - {fileID: 11400000, guid: 773e812ec4c4fa7429d2f4ab8a225781, type: 2}

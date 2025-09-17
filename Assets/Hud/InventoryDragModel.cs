@@ -81,29 +81,6 @@ namespace Hud
             ClearDrag();
         }
 
-        private void TryDropHoveredSlot()
-        {
-            PointerEventData pointerData = new PointerEventData(EventSystem.current)
-            {
-                position = Input.mousePosition
-            };
-
-            var results = new List<RaycastResult>();
-            EventSystem.current.RaycastAll(pointerData, results);
-
-            foreach (var result in results)
-            {
-                var slot = result.gameObject.GetComponent<InventorySlotView>();
-                if (slot != null && slot.CurrentGameItem != null)
-                {
-                    SpawnItemDrop(slot.CurrentGameItem, slot.CurrentAmount);
-                    slot.Clear();
-                    return;
-                }
-            }
-        }
-
-
         public void SpawnItemDrop(GameItem item, int amount)
         {
             _inventoryModel.RemoveItem(item, amount);
