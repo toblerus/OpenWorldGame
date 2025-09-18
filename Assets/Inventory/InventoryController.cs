@@ -19,7 +19,7 @@ namespace Inventory
         {
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
 
-            _inventoryModel.ItemAdded.Subscribe(_ => RefreshView());
+            _inventoryModel.ItemAdded.Subscribe(RefreshView);
         }
 
         private void RefreshView()

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using ReactiveCore;
+using ReactiveCore.Runtime;
 using Saving;
 using UnityEditor;
 using UnityEngine;
@@ -12,7 +13,9 @@ namespace Inventory
     {
         private Dictionary<GameItem, int> _inventory = new();
 
-        public ReactiveValue<int> ItemAdded { get; } = new();
+        public ReactiveEmitter ItemAdded { get; } = new();
+        public ReactiveEmitter ItemRemoved { get; } = new();
+        public ReactiveEmitter InventoryModified { get; } = new();
 
         public InventoryModel()
         {
@@ -37,7 +40,8 @@ namespace Inventory
                 _inventory[gameItem] = Mathf.Min(amount, gameItem.MaxStack);
             }
 
-            ItemAdded.Value++;
+            ItemAdded.Emit();
+            InventoryModified.Emit();
             ES3.Save(SavegameConstants.Inventory, _inventory);
         }
 
@@ -49,6 +53,8 @@ namespace Inventory
             {
                 _inventory.Remove(gameItem);
             }
+            ItemRemoved.Emit();
+            InventoryModified.Emit();
             ES3.Save(SavegameConstants.Inventory, _inventory);
         }
 
