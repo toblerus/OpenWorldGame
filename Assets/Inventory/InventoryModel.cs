@@ -18,6 +18,8 @@ namespace Inventory
         public ReactiveEmitter ItemRemoved { get; } = new();
         public ReactiveValue<(int, (GameItem Item, int Amount))> InventorySlotModified { get; } = new();
         
+        public ReactiveEmitter ItemDragFinished { get; } = new();
+        
         public void AddItem(GameItem gameItem, int amount)
         {
             if (TryGetSlotForOrEmpty(gameItem, out var slot))

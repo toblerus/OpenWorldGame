@@ -10,16 +10,7 @@ namespace Hud
         public void Setup(HotBarView hotBarView)
         {
             _hotBarView = hotBarView;
-            SetupSlots();
             SelectSlot(0);
-        }
-
-        public void SetupSlots()
-        {
-            foreach (var slot in _hotBarView.InventorySlotViews)
-            {
-                slot.Clear();
-            }
         }
         
         private int _selectedIndex = 0;

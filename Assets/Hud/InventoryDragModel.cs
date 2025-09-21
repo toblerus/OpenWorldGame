@@ -69,7 +69,6 @@ namespace Hud
             {
                 SpawnItemDrop(_draggedItem, _draggedCount);
             }
-
             ClearDrag();
         }
 
@@ -79,6 +78,7 @@ namespace Hud
 
             targetSlot.SetupGameItem(_draggedItem, _draggedCount);
             ClearDrag();
+            _inventoryModel.ItemDragFinished.Emit();
         }
 
         public void SpawnItemDrop(GameItem item, int amount)

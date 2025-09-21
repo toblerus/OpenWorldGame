@@ -23,6 +23,11 @@ namespace Inventory
         private static InventorySlotView _currentlyHovered;
         public static InventorySlotView CurrentlyHovered => _currentlyHovered;
 
+        private void Awake()
+        {
+            Clear();
+        }
+        
         private void Start()
         {
             _controller = ServiceLocator.Resolve<InventorySlotController>();

@@ -30,6 +30,8 @@ namespace Inventory
                 SaveInventory();
             });
             
+            _inventoryModel.ItemDragFinished.SkipValueOnSubscribe(SaveInventory);
+            
             if (ES3.KeyExists(SavegameConstants.Inventory))
             {
                 var inventorySavegame = ES3.Load<List<SlotData>>(SavegameConstants.Inventory);
@@ -46,9 +48,9 @@ namespace Inventory
             {
                 _inventoryModel.SetupInventoryFromSlotData(_view.GetSlotData());
                 
-                foreach (var defaultItem in _defaultItems)
+                foreach (var item in _defaultItems)
                 {
-                    _inventoryModel.AddItem(defaultItem, Random.Range(1, 64));
+                    _inventoryModel.AddItem(item, Random.Range(1, 64));
                 }
             }
         }
