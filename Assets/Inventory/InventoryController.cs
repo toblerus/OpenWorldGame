@@ -19,25 +19,43 @@ namespace Inventory
         {
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
 
-            _inventoryModel.ItemAdded.Subscribe(RefreshView);
+            _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(slot =>
+            {
+                var (index, (item, amount)) = slot;
+                _view.InventorySlotViews[index].SetupGameItem(item, amount);
+            });
+            
+            _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ =>
+            {
+                SaveInventory();
+            });
+            
+            if (ES3.KeyExists(SavegameConstants.Inventory))
+            {
+                var inventorySavegame = ES3.Load<List<SlotData>>(SavegameConstants.Inventory);
+                if (inventorySavegame == null) return;
+                
+                _inventoryModel.SetupInventoryFromSlotData(inventorySavegame);
+                
+                foreach (var item in inventorySavegame.Where(item => item.Item != null))
+                {
+                    _inventoryModel.AddItem(item.Item, item.Amount);
+                }
+            }
+            else
+            {
+                _inventoryModel.SetupInventoryFromSlotData(_view.GetSlotData());
+                
+                foreach (var defaultItem in _defaultItems)
+                {
+                    _inventoryModel.AddItem(defaultItem, Random.Range(1, 64));
+                }
+            }
         }
 
-        private void RefreshView()
+        private void SaveInventory()
         {
-            var items = _inventoryModel.GetAllItems();
-            var slots = _view.InventorySlotViews;
-
-            var index = 0;
-            foreach (var kvp in items.TakeWhile(kvp => index < slots.Count))
-            {
-                slots[index].SetupGameItem(kvp.Key, kvp.Value);
-                index++;
-            }
-
-            for (; index < slots.Count; index++)
-            {
-                slots[index].Clear();
-            }
+            ES3.Save(SavegameConstants.Inventory, _view.GetSlotData());
         }
     }
 }

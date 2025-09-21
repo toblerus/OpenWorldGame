@@ -7,7 +7,8 @@ using UnityEngine.UI;
 
 namespace Inventory
 {
-    public class InventorySlotView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler
+    public class InventorySlotView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler,
+        IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private Image _itemIcon;
         [SerializeField] private TextMeshProUGUI _itemAmount;
@@ -30,11 +31,12 @@ namespace Inventory
 
         public void SetupGameItem(GameItem gameItem, int amount)
         {
+            _itemIcon.enabled = gameItem != null;
+
+            _itemIcon.sprite = gameItem?.Icon;
             _currentGameItem = gameItem;
             _currentAmount = amount;
-            _itemIcon.sprite = gameItem.Icon;
-            _itemIcon.enabled = true;
-            _itemAmount.text = amount.ToString();
+            _itemAmount.text = amount > 0 ? amount.ToString() : "";
         }
 
         public void Clear()
@@ -84,7 +86,7 @@ namespace Inventory
         }
 
         public bool HasItem => _currentGameItem != null;
-        
+
         public void Highlight(bool isActive)
         {
             if (_highlight != null)
