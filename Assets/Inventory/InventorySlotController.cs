@@ -25,16 +25,6 @@ namespace Inventory
             InventoryDragModel.Instance.UpdateDragPosition(eventData.position);
         }
 
-        public void OnEndDrag(PointerEventData eventData)
-        {
-            // handled by slot view
-        }
-
-        public void AcceptDrop(GameItem gameItem, int amount)
-        {
-            _view.SetupGameItem(gameItem, amount);
-        }
-
         public void OnDropRequest()
         {
             if (!_view.HasItem)

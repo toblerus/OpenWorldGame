@@ -17,6 +17,13 @@ namespace Inventory
 
         private void Start()
         {
+            Setup();
+
+            LoadInventory();
+        }
+
+        private void Setup()
+        {
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
 
             _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(slot =>
@@ -24,21 +31,21 @@ namespace Inventory
                 var (index, (item, amount)) = slot;
                 _view.InventorySlotViews[index].SetupGameItem(item, amount);
             });
-            
-            _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ =>
-            {
-                SaveInventory();
-            });
-            
+
+            _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ => { SaveInventory(); });
+
             _inventoryModel.ItemDragFinished.SkipValueOnSubscribe(SaveInventory);
-            
+        }
+
+        private void LoadInventory()
+        {
             if (ES3.KeyExists(SavegameConstants.Inventory))
             {
                 var inventorySavegame = ES3.Load<List<SlotData>>(SavegameConstants.Inventory);
                 if (inventorySavegame == null) return;
-                
+
                 _inventoryModel.SetupInventoryFromSlotData(inventorySavegame);
-                
+
                 foreach (var item in inventorySavegame.Where(item => item.Item != null))
                 {
                     _inventoryModel.AddItem(item.Item, item.Amount);
@@ -47,7 +54,7 @@ namespace Inventory
             else
             {
                 _inventoryModel.SetupInventoryFromSlotData(_view.GetSlotData());
-                
+
                 foreach (var item in _defaultItems)
                 {
                     _inventoryModel.AddItem(item, Random.Range(1, 64));

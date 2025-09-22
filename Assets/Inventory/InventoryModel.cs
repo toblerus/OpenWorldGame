@@ -13,9 +13,6 @@ namespace Inventory
     public class InventoryModel
     {
         private Dictionary<int, (GameItem Item, int Amount)> _inventory = new();
-
-        public ReactiveEmitter ItemAdded { get; } = new();
-        public ReactiveEmitter ItemRemoved { get; } = new();
         public ReactiveValue<(int, (GameItem Item, int Amount))> InventorySlotModified { get; } = new();
         
         public ReactiveEmitter ItemDragFinished { get; } = new();
@@ -31,7 +28,6 @@ namespace Inventory
                 _inventory[slot] = (gameItem,Mathf.Min(amount, gameItem.MaxStack));
             }
 
-            ItemAdded.Emit();
             InventorySlotModified.Value = (slot, (gameItem, _inventory[slot].Amount));
         }
 
@@ -45,8 +41,6 @@ namespace Inventory
                 {
                     _inventory.Remove(slot.Key);
                 }
-                ItemRemoved.Emit();
-                InventorySlotModified.Value = (slot.Key, (slot.Value.Item, slot.Value.Amount));
             }
         }
 

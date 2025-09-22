@@ -1,7 +1,7 @@
-using Inventory;
+using Hud;
 using UnityEngine;
 
-namespace Hud
+namespace Inventory.Hotbar
 {
     public class HotBarController
     {

@@ -1,6 +1,7 @@
 ﻿using Hud;
 using Injection;
 using Inventory;
+using Inventory.Hotbar;
 using UnityEngine;
 
 namespace Installation

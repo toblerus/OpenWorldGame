@@ -1,9 +1,8 @@
 using System.Collections.Generic;
 using Injection;
-using Inventory;
 using UnityEngine;
 
-namespace Hud
+namespace Inventory.Hotbar
 {
     public class HotBarView : MonoBehaviour
     {

@@ -36,6 +36,7 @@ namespace Inventory
 
         public void SetupGameItem(GameItem gameItem, int amount)
         {
+            CallLogger.LogHere("Setup");
             _itemIcon.enabled = gameItem != null;
 
             _itemIcon.sprite = gameItem?.Icon;
