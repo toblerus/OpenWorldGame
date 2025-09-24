@@ -12,99 +12,132 @@ namespace Inventory
 {
     public class InventoryModel
     {
-        private Dictionary<int, (GameItem Item, int Amount)> _inventory = new();
+        private List<(GameItem Item, int Amount)> _inventory = new();
         public ReactiveValue<(int, (GameItem Item, int Amount))> InventorySlotModified { get; } = new();
-        
         public ReactiveEmitter ItemDragFinished { get; } = new();
         
         public void AddItem(GameItem gameItem, int amount)
         {
+            if (gameItem == null || amount <= 0) return;
             if (TryGetSlotForOrEmpty(gameItem, out var slot))
             {
-                _inventory[slot] = (gameItem, Mathf.Min(_inventory[slot].Amount + amount, gameItem.MaxStack));
+                EnsureSize(slot + 1);
+                var current = _inventory[slot];
+                var newAmount = current.Item == null ? Mathf.Min(amount, gameItem.MaxStack) : Mathf.Min(current.Amount + amount, gameItem.MaxStack);
+                _inventory[slot] = (gameItem, newAmount);
+                InventorySlotModified.Value = (slot, _inventory[slot]);
+                return;
             }
-            else
-            {
-                _inventory[slot] = (gameItem,Mathf.Min(amount, gameItem.MaxStack));
-            }
-
-            InventorySlotModified.Value = (slot, (gameItem, _inventory[slot].Amount));
+            var newSlot = _inventory.Count;
+            EnsureSize(newSlot + 1);
+            _inventory[newSlot] = (gameItem, Mathf.Min(amount, gameItem.MaxStack));
+            InventorySlotModified.Value = (newSlot, _inventory[newSlot]);
         }
-
-        public void RemoveItem(GameItem gameItem, int amount)
-        {
-            var slot = _inventory.FirstOrDefault(stack => stack.Value.Item == gameItem);
-            if (slot.Value.Item != null)
-            {
-                _inventory[slot.Key] = (slot.Value.Item, slot.Value.Amount - amount);
-                if (_inventory[slot.Key].Amount <= 0)
-                {
-                    _inventory.Remove(slot.Key);
-                }
-            }
-        }
-
-        public Dictionary<int, (GameItem Item, int Amount)> GetAllItems()
+        
+        public List<(GameItem Item, int Amount)> GetAllItems()
         {
             return _inventory;
+        }
+        
+
+        private bool TryGetSlotForOrEmpty(GameItem gameItem, out int slotIndex)
+        {
+            slotIndex = -1;
+            if (gameItem != null)
+            {
+                for (var i = 0; i < _inventory.Count; i++)
+                {
+                    var entry = _inventory[i];
+                    if (entry.Item == gameItem && entry.Amount < gameItem.MaxStack)
+                    {
+                        slotIndex = i;
+                        return true;
+                    }
+                }
+            }
+            for (var i = 0; i < _inventory.Count; i++)
+            {
+                var entry = _inventory[i];
+                if (entry.Item == null || entry.Amount <= 0)
+                {
+                    slotIndex = i;
+                    return true;
+                }
+            }
+            return false;
         }
 
         private bool TryGetSlotFor(GameItem gameItem, out int slotIndex)
         {
-            foreach (var (index, entry) in _inventory)
+            for (var i = 0; i < _inventory.Count; i++)
             {
-                if (entry.Item != gameItem) continue;
-                slotIndex = index;
-                return true;
+                var entry = _inventory[i];
+                if (entry.Item != null && gameItem != null && entry.Item == gameItem)
+                {
+                    slotIndex = i;
+                    return true;
+                }
             }
             slotIndex = -1;
             return false;
         }
-        
-        private bool TryGetSlotForOrEmpty(GameItem gameItem, out int slotIndex)
+
+        public void RemoveItem(GameItem gameItem, int amount)
         {
-            foreach (var (index, entry) in _inventory)
+            if (gameItem == null || amount <= 0) return;
+            if (!TryGetSlotFor(gameItem, out var index)) return;
+            var entry = _inventory[index];
+            var remaining = entry.Amount - amount;
+            if (remaining <= 0)
             {
-                if (entry.Item != gameItem) continue;
-                slotIndex = index;
-                return true;
+                _inventory[index] = (null, 0);
             }
-            
-            foreach (var (index, entry) in _inventory)
+            else
             {
-                if (entry.Item != null) continue;
-                slotIndex = index;
-                return true;
+                _inventory[index] = (entry.Item, remaining);
             }
-            
-            slotIndex = -1;
-            return false;
+            InventorySlotModified.Value = (index, _inventory[index]);
         }
+
         
         public void SetupInventoryFromSlotData(List<SlotData> slots)
         {
             if (slots == null) return;
-
-            var newInventory = new Dictionary<int, (GameItem Item, int Amount)>(slots.Count);
+            var targetSize = 0;
+            foreach (var s in slots)
+            {
+                if (s == null) continue;
+                if (s.Index + 1 > targetSize) targetSize = s.Index + 1;
+            }
+            var newInventory = new List<(GameItem Item, int Amount)>(targetSize);
+            for (var i = 0; i < targetSize; i++)
+            {
+                newInventory.Add((null, 0));
+            }
             foreach (var slotData in slots)
             {
                 if (slotData == null) continue;
-
                 var item = slotData.Item;
                 var amount = slotData.Amount;
-
                 if (item == null || amount <= 0)
                 {
                     newInventory[slotData.Index] = (null, 0);
                     continue;
                 }
-
-                var clampedAmount = Mathf.Min(amount, item.MaxStack);
-                newInventory[slotData.Index] = (item, clampedAmount);
+                var clamped = Mathf.Min(amount, item.MaxStack);
+                newInventory[slotData.Index] = (item, clamped);
             }
-
             _inventory = newInventory;
         }
 
+        private void EnsureSize(int size)
+        {
+            if (_inventory.Count >= size) return;
+            var toAdd = size - _inventory.Count;
+            for (var i = 0; i < toAdd; i++)
+            {
+                _inventory.Add((null, 0));
+            }
+        }
     }
 }
