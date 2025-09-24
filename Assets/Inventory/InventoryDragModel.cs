@@ -68,6 +68,7 @@ namespace Hud
             else if(hoveredSlot == null)
             {
                 SpawnItemDrop(_draggedItem, _draggedCount);
+                _inventoryModel.ItemDragFinished.Emit();
             }
             ClearDrag();
         }
