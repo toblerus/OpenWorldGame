@@ -45,38 +45,26 @@ namespace Inventory
             slotIndex = -1;
             if (gameItem != null)
             {
-                for (var i = 0; i < _inventory.Count; i++)
+                foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == gameItem)).Where(entry => entry.Item != null && gameItem != null && entry.Item == gameItem))
                 {
-                    var entry = _inventory[i];
-                    if (entry.Item == gameItem && entry.Amount < gameItem.MaxStack)
-                    {
-                        slotIndex = i;
-                        return true;
-                    }
-                }
-            }
-            for (var i = 0; i < _inventory.Count; i++)
-            {
-                var entry = _inventory[i];
-                if (entry.Item == null || entry.Amount <= 0)
-                {
-                    slotIndex = i;
+                    slotIndex = _inventory.IndexOf(entry);
                     return true;
                 }
+            }
+            foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == null)).Where(entry => entry.Item == null || entry.Amount <= 0))
+            {
+                slotIndex = _inventory.IndexOf(entry);
+                return true;
             }
             return false;
         }
 
         private bool TryGetSlotFor(GameItem gameItem, out int slotIndex)
         {
-            for (var i = 0; i < _inventory.Count; i++)
+            foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == gameItem)).Where(entry => entry.Item != null && gameItem != null && entry.Item == gameItem))
             {
-                var entry = _inventory[i];
-                if (entry.Item != null && gameItem != null && entry.Item == gameItem)
-                {
-                    slotIndex = i;
-                    return true;
-                }
+                slotIndex = _inventory.IndexOf(entry);
+                return true;
             }
             slotIndex = -1;
             return false;
