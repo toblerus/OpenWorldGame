@@ -1,10 +1,7 @@
-using System.Collections.Generic;
-using System.ComponentModel.Design;
 using Injection;
 using Inventory;
 using TMPro;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace Hud
@@ -34,25 +31,23 @@ namespace Hud
         {
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
         }
+
         public void StartDrag(InventorySlotView sourceSlot, GameItem item, string amountStr, Vector2 position)
         {
             _sourceSlot = sourceSlot;
             _draggedItem = item;
             _draggedCount = int.TryParse(amountStr, out var parsed) ? parsed : 0;
             _isDragging = true;
-
             _draggedIcon.sprite = item.Icon;
             _draggedAmount.text = _draggedCount.ToString();
             _draggedIcon.transform.parent.gameObject.SetActive(true);
             _draggedIcon.gameObject.SetActive(true);
-
             UpdateDragPosition(position);
         }
 
         public void UpdateDragPosition(Vector2 position)
         {
             if (!_isDragging) return;
-
             _draggedIcon.transform.position = position;
             _draggedAmount.transform.position = position;
         }
@@ -60,13 +55,14 @@ namespace Hud
         public void EndDrag(InventorySlotView sourceSlot, InventorySlotView hoveredSlot)
         {
             if (!_isDragging) return;
-
             if (hoveredSlot != null && hoveredSlot != sourceSlot)
             {
-                hoveredSlot.SetupGameItem(_draggedItem, _draggedCount);
+                _inventoryModel.SwapOrMove(sourceSlot.SlotIndex, hoveredSlot.SlotIndex);
+                _inventoryModel.ItemDragFinished.Emit();
             }
-            else if(hoveredSlot == null)
+            else if (hoveredSlot == null)
             {
+                _inventoryModel.RemoveAt(sourceSlot.SlotIndex, _draggedCount);
                 SpawnItemDrop(_draggedItem, _draggedCount);
                 _inventoryModel.ItemDragFinished.Emit();
             }
@@ -76,15 +72,13 @@ namespace Hud
         public void HandleDrop(InventorySlotView targetSlot)
         {
             if (!_isDragging) return;
-
-            targetSlot.SetupGameItem(_draggedItem, _draggedCount);
+            _inventoryModel.SwapOrMove(_sourceSlot.SlotIndex, targetSlot.SlotIndex);
             ClearDrag();
             _inventoryModel.ItemDragFinished.Emit();
         }
 
         public void SpawnItemDrop(GameItem item, int amount)
         {
-            _inventoryModel.RemoveItem(item, amount);
             var model = new ItemDropModel(item, amount);
             var view = Instantiate(_itemDropPrefab, transform.position + transform.forward, Quaternion.identity);
             view.GetComponent<ItemDropView>().Setup(model);
@@ -96,6 +90,7 @@ namespace Hud
             _draggedItem = null;
             _draggedCount = 0;
             _isDragging = false;
+            _sourceSlot = null;
         }
     }
 }

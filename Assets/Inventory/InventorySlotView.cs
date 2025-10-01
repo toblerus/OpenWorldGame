@@ -15,6 +15,7 @@ namespace Inventory
         [SerializeField] private GameItem _currentGameItem;
         [SerializeField] private GameObject _highlight;
 
+        public int SlotIndex { get; set; }
         public GameItem CurrentGameItem => _currentGameItem;
         public int CurrentAmount => _currentAmount;
         private int _currentAmount;
@@ -27,7 +28,7 @@ namespace Inventory
         {
             Clear();
         }
-        
+
         private void Start()
         {
             _controller = ServiceLocator.Resolve<InventorySlotController>();
@@ -36,9 +37,7 @@ namespace Inventory
 
         public void SetupGameItem(GameItem gameItem, int amount)
         {
-            CallLogger.LogHere("Setup");
             _itemIcon.enabled = gameItem != null;
-
             _itemIcon.sprite = gameItem?.Icon;
             _currentGameItem = gameItem;
             _currentAmount = amount;
@@ -76,7 +75,6 @@ namespace Inventory
 
         public void RequestDrop()
         {
-            Debug.Log($"[InventorySlotView] RequestDrop triggered on: {gameObject.name}");
             _controller.OnDropRequest();
         }
 

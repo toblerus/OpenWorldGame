@@ -4,9 +4,7 @@ using System.Linq;
 using ReactiveCore;
 using ReactiveCore.Runtime;
 using Saving;
-using UnityEditor;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 namespace Inventory
 {
@@ -15,7 +13,7 @@ namespace Inventory
         private List<(GameItem Item, int Amount)> _inventory = new();
         public ReactiveValue<(int, (GameItem Item, int Amount))> InventorySlotModified { get; } = new();
         public ReactiveEmitter ItemDragFinished { get; } = new();
-        
+
         public void AddItem(GameItem gameItem, int amount)
         {
             if (gameItem == null || amount <= 0) return;
@@ -33,12 +31,82 @@ namespace Inventory
             _inventory[newSlot] = (gameItem, Mathf.Min(amount, gameItem.MaxStack));
             InventorySlotModified.Value = (newSlot, _inventory[newSlot]);
         }
-        
+
         public List<(GameItem Item, int Amount)> GetAllItems()
         {
             return _inventory;
         }
-        
+
+        public void SwapOrMove(int fromIndex, int toIndex)
+        {
+            EnsureSize(Mathf.Max(fromIndex, toIndex) + 1);
+            var from = _inventory[fromIndex];
+            var to = _inventory[toIndex];
+            if (from.Item == null || from.Amount <= 0) return;
+            if (to.Item == null || to.Amount <= 0)
+            {
+                _inventory[toIndex] = from;
+                _inventory[fromIndex] = (null, 0);
+                InventorySlotModified.Value = (fromIndex, _inventory[fromIndex]);
+                InventorySlotModified.Value = (toIndex, _inventory[toIndex]);
+                return;
+            }
+            _inventory[toIndex] = from;
+            _inventory[fromIndex] = to;
+            InventorySlotModified.Value = (fromIndex, _inventory[fromIndex]);
+            InventorySlotModified.Value = (toIndex, _inventory[toIndex]);
+        }
+
+        public void RemoveAt(int index, int amount)
+        {
+            EnsureSize(index + 1);
+            var entry = _inventory[index];
+            if (entry.Item == null || amount <= 0) return;
+            var remaining = entry.Amount - amount;
+            if (remaining <= 0)
+            {
+                _inventory[index] = (null, 0);
+            }
+            else
+            {
+                _inventory[index] = (entry.Item, remaining);
+            }
+            InventorySlotModified.Value = (index, _inventory[index]);
+        }
+
+        public void SetupInventoryFromSlotData(List<SlotData> slots)
+        {
+            if (slots == null) return;
+            var targetSize = 0;
+            foreach (var s in slots)
+            {
+                if (s == null) continue;
+                if (s.Index + 1 > targetSize) targetSize = s.Index + 1;
+            }
+            var newInventory = new List<(GameItem Item, int Amount)>(targetSize);
+            for (var i = 0; i < targetSize; i++)
+            {
+                newInventory.Add((null, 0));
+            }
+            foreach (var slotData in slots)
+            {
+                if (slotData == null) continue;
+                var item = slotData.Item;
+                var amount = slotData.Amount;
+                if (item == null || amount <= 0)
+                {
+                    newInventory[slotData.Index] = (null, 0);
+                    continue;
+                }
+                var clamped = Mathf.Min(amount, item.MaxStack);
+                newInventory[slotData.Index] = (item, clamped);
+            }
+            _inventory = newInventory;
+            for (var i = 0; i < _inventory.Count; i++)
+            {
+                InventorySlotModified.Value = (i, _inventory[i]);
+            }
+        }
 
         private bool TryGetSlotForOrEmpty(GameItem gameItem, out int slotIndex)
         {
@@ -85,37 +153,6 @@ namespace Inventory
                 _inventory[index] = (entry.Item, remaining);
             }
             InventorySlotModified.Value = (index, _inventory[index]);
-        }
-
-        
-        public void SetupInventoryFromSlotData(List<SlotData> slots)
-        {
-            if (slots == null) return;
-            var targetSize = 0;
-            foreach (var s in slots)
-            {
-                if (s == null) continue;
-                if (s.Index + 1 > targetSize) targetSize = s.Index + 1;
-            }
-            var newInventory = new List<(GameItem Item, int Amount)>(targetSize);
-            for (var i = 0; i < targetSize; i++)
-            {
-                newInventory.Add((null, 0));
-            }
-            foreach (var slotData in slots)
-            {
-                if (slotData == null) continue;
-                var item = slotData.Item;
-                var amount = slotData.Amount;
-                if (item == null || amount <= 0)
-                {
-                    newInventory[slotData.Index] = (null, 0);
-                    continue;
-                }
-                var clamped = Mathf.Min(amount, item.MaxStack);
-                newInventory[slotData.Index] = (item, clamped);
-            }
-            _inventory = newInventory;
         }
 
         private void EnsureSize(int size)
