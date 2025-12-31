@@ -10,10 +10,13 @@ namespace Inventory.Hotbar
         public void Setup(HotBarView hotBarView)
         {
             _hotBarView = hotBarView;
+             for (var i = 0; i < _hotBarView.InventorySlotViews.Count; i++)
+                 _hotBarView.InventorySlotViews[i].SlotIndex = i;
             SelectSlot(0);
         }
         
         private int _selectedIndex = 0;
+        public int SelectedIndex => _selectedIndex;
         public GameItem ActiveItem => _hotBarView.InventorySlotViews[_selectedIndex].CurrentGameItem;
 
         public void SelectSlot(int index)
@@ -21,13 +24,9 @@ namespace Inventory.Hotbar
             var slots = _hotBarView.InventorySlotViews;
             if (slots.Count == 0) return;
 
-            // Clamp and wrap
             _selectedIndex = (index + slots.Count) % slots.Count;
-
-            for (int i = 0; i < slots.Count; i++)
-            {
+            for (var i = 0; i < slots.Count; i++)
                 slots[i].Highlight(i == _selectedIndex);
-            }
 
             Debug.Log($"[HotBar] Selected slot: {_selectedIndex}, Item: {ActiveItem?.name ?? "None"}");
         }
@@ -36,6 +35,5 @@ namespace Inventory.Hotbar
         {
             SelectSlot(_selectedIndex + direction);
         }
-
     }
 }

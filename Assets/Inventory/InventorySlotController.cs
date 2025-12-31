@@ -29,11 +29,11 @@ namespace Inventory
         {
             if (!_view.HasItem)
             {
-                Debug.Log("[InventorySlotController] Drop request ignored: no item to drop.");
+                Debug.LogError("[InventorySlotController] Drop request ignored: no item to drop.");
                 return;
             }
 
-            Debug.Log($"[InventorySlotController] Dropping item: {_view.CurrentGameItem.name}, amount: {_view.CurrentAmount}");
+            Debug.LogError($"[InventorySlotController] Dropping item: {_view.CurrentGameItem.name}, amount: {_view.CurrentAmount}");
             InventoryDragModel.Instance.SpawnItemDrop(_view.CurrentGameItem, _view.CurrentAmount);
             _view.Clear();
         }

@@ -7,8 +7,7 @@ using UnityEngine.UI;
 
 namespace Inventory
 {
-    public class InventorySlotView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler,
-        IPointerEnterHandler, IPointerExitHandler
+    public class InventorySlotView : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler, IPointerEnterHandler, IPointerExitHandler
     {
         [SerializeField] private Image _itemIcon;
         [SerializeField] private TextMeshProUGUI _itemAmount;
@@ -64,7 +63,7 @@ namespace Inventory
 
         public void OnEndDrag(PointerEventData eventData)
         {
-            var target = eventData.pointerEnter?.GetComponent<InventorySlotView>();
+            var target = eventData.pointerEnter == null ? null : eventData.pointerEnter.GetComponentInParent<InventorySlotView>();
             InventoryDragModel.Instance.EndDrag(this, target);
         }
 

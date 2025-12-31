@@ -54,6 +54,7 @@ namespace Hud
 
         public void EndDrag(InventorySlotView sourceSlot, InventorySlotView hoveredSlot)
         {
+            Debug.LogError(hoveredSlot.name);
             if (!_isDragging) return;
             if (hoveredSlot != null && hoveredSlot != sourceSlot)
             {
