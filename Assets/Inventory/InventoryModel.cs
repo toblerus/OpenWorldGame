@@ -11,7 +11,8 @@ namespace Inventory
     public class InventoryModel
     {
         private List<(GameItem Item, int Amount)> _inventory = new();
-        public ReactiveValue<(int, (GameItem Item, int Amount))> InventorySlotModified { get; } = new();
+        private int _hotBarOffset = 15;
+        public ReactiveValue<(int slotIndex, (GameItem Item, int Amount))> InventorySlotModified { get; } = new();
         public ReactiveEmitter ItemDragFinished { get; } = new();
 
         public void AddItem(GameItem gameItem, int amount)
@@ -74,14 +75,14 @@ namespace Inventory
             InventorySlotModified.Value = (index, _inventory[index]);
         }
 
-        public void SetupInventoryFromSlotData(List<SlotData> slots)
+        public void SetupInventoryFromSlotData(List<SlotData> slots, bool isHotbar = false)
         {
             if (slots == null) return;
             var targetSize = 0;
-            foreach (var s in slots)
+            foreach (var slot in slots)
             {
-                if (s == null) continue;
-                if (s.Index + 1 > targetSize) targetSize = s.Index + 1;
+                if (slot == null) continue;
+                if (slot.Index + 1 > targetSize) targetSize = slot.Index + 1;
             }
             var newInventory = new List<(GameItem Item, int Amount)>(targetSize);
             for (var i = 0; i < targetSize; i++)
@@ -104,7 +105,12 @@ namespace Inventory
             _inventory = newInventory;
             for (var i = 0; i < _inventory.Count; i++)
             {
-                InventorySlotModified.Value = (i, _inventory[i]);
+                var index = i;
+                
+                if (isHotbar)
+                    index += _hotBarOffset;
+                
+                InventorySlotModified.Value = (index, _inventory[i]);
             }
         }
 

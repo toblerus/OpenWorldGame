@@ -13,6 +13,7 @@ namespace Inventory
         [SerializeField] private InventoryPanelView _view;
         private InventoryModel _inventoryModel;
         [SerializeField] private List<GameItem> _defaultItems;
+        private int _hotBarOffset = 15;
 
         private void Start()
         {
@@ -31,11 +32,14 @@ namespace Inventory
             _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(slot =>
             {
                 var (index, (item, amount)) = slot;
-                
-                var slotMatchingIndex = _view.InventorySlotViews.FirstOrDefault(slots => slots.SlotIndex == index);
-                if (slotMatchingIndex != null)
+
+                if (index < _hotBarOffset)
                 {
-                    slotMatchingIndex.SetupGameItem(item, amount);
+                    var slotMatchingIndex = _view.InventorySlotViews.FirstOrDefault(slots => slots.SlotIndex == index);
+                    if (slotMatchingIndex != null)
+                    {
+                        slotMatchingIndex.SetupGameItem(item, amount);
+                    }
                 }
             });
             _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ => { SaveInventory(); });

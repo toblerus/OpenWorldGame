@@ -37,7 +37,5 @@ namespace Inventory
             InventoryDragModel.Instance.SpawnItemDrop(_view.CurrentGameItem, _view.CurrentAmount);
             _view.Clear();
         }
-
-        public InventorySlotView View => _view;
     }
 }
