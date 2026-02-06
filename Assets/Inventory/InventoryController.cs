@@ -31,7 +31,12 @@ namespace Inventory
             _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(slot =>
             {
                 var (index, (item, amount)) = slot;
-                _view.InventorySlotViews[index].SetupGameItem(item, amount);
+                
+                var slotMatchingIndex = _view.InventorySlotViews.FirstOrDefault(slots => slots.SlotIndex == index);
+                if (slotMatchingIndex != null)
+                {
+                    slotMatchingIndex.SetupGameItem(item, amount);
+                }
             });
             _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ => { SaveInventory(); });
             _inventoryModel.ItemDragFinished.SkipValueOnSubscribe(SaveInventory);
