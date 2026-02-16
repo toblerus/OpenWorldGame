@@ -10,8 +10,7 @@ namespace Inventory
 {
     public class InventoryModel
     {
-        private List<(GameItem Item, int Amount)> _inventory = new();
-        private int _hotBarOffset = 15;
+        private List<(GameItem Item, int Amount)> _inventory;
         public ReactiveValue<(int slotIndex, (GameItem Item, int Amount))> InventorySlotModified { get; } = new();
         public ReactiveEmitter ItemDragFinished { get; } = new();
 
@@ -79,38 +78,43 @@ namespace Inventory
         {
             if (slots == null) return;
             var targetSize = 0;
+
+            var hotBarOffset = isHotbar ? 15 : 0;
+            
             foreach (var slot in slots)
             {
                 if (slot == null) continue;
-                if (slot.Index + 1 > targetSize) targetSize = slot.Index + 1;
+                if (slot.Index + 1 > targetSize) 
+                    targetSize = slot.Index + 1;
             }
-            var newInventory = new List<(GameItem Item, int Amount)>(targetSize);
-            for (var i = 0; i < targetSize; i++)
+
+            targetSize += hotBarOffset;
+            
+            _inventory ??= new List<(GameItem Item, int Amount)>(targetSize);
+
+            while(_inventory.Count <= targetSize)
             {
-                newInventory.Add((null, 0));
+                    _inventory.Add((null, 0));
             }
-            foreach (var slotData in slots)
+            
+            foreach (var slot in slots)
             {
-                if (slotData == null) continue;
-                var item = slotData.Item;
-                var amount = slotData.Amount;
+                if (slot == null) continue;
+                var item = slot.Item;
+                var amount = slot.Amount;
+                var index = slot.Index + hotBarOffset;
                 if (item == null || amount <= 0)
                 {
-                    newInventory[slotData.Index] = (null, 0);
+                    _inventory[index] = (null, 0);
                     continue;
                 }
                 var clamped = Mathf.Min(amount, item.MaxStack);
-                newInventory[slotData.Index] = (item, clamped);
+                _inventory[index] = (item, clamped);
             }
-            _inventory = newInventory;
+            
             for (var i = 0; i < _inventory.Count; i++)
             {
-                var index = i;
-                
-                if (isHotbar)
-                    index += _hotBarOffset;
-                
-                InventorySlotModified.Value = (index, _inventory[i]);
+                InventorySlotModified.Value = (i, _inventory[i]);
             }
         }
 

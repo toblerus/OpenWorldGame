@@ -38,11 +38,8 @@ namespace ReactiveCore
             get => _value;
             set
             {
-                if (!EqualityComparer<T>.Default.Equals(_value, value))
-                {
-                    _value = value;
-                    NotifySubscribers();
-                }
+                _value = value;
+                NotifySubscribers();
             }
         }
 
