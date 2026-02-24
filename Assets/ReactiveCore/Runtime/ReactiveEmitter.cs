@@ -22,10 +22,24 @@ namespace ReactiveCore.Runtime
 
         public void Emit()
         {
-            foreach (var callback in _subscribers.ToArray())
+            var snapshot = _subscribers.ToArray();
+            for (var i = 0; i < snapshot.Length; i++)
             {
-                callback?.Invoke();
+                snapshot[i]?.Invoke();
             }
+        }
+
+        public static ReactiveEmitter Merge(params ReactiveEmitter[] emitters)
+        {
+            var merged = new ReactiveEmitter();
+
+            for (var i = 0; i < emitters.Length; i++)
+            {
+                var emitter = emitters[i];
+                emitter.SkipValueOnSubscribe(() => merged.Emit());
+            }
+
+            return merged;
         }
 
         private void Unsubscribe(Action callback)
