@@ -12,7 +12,9 @@ namespace Installation
             ServiceLocator.BindSingleton<HealthModel>();
             ServiceLocator.BindSingleton<HealthController>();
             
-            //Food...
+            //Nutrition
+            ServiceLocator.BindSingleton<NutritionModel>();
+            ServiceLocator.BindSingleton<NutritionController>();
         }
 
         public void Uninstall()
@@ -21,7 +23,9 @@ namespace Installation
             ServiceLocator.Unbind<HealthModel>();
             ServiceLocator.Unbind<HealthController>();
             
-            //Food...
+            //Nutrition
+            ServiceLocator.Unbind<NutritionModel>();
+            ServiceLocator.Unbind<NutritionController>();
         }
     }
 }

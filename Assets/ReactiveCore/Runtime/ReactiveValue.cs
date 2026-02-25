@@ -52,8 +52,8 @@ namespace ReactiveCore
         private void NotifySubscribers()
         {
             var snapshot = _subscriptions.ToArray();
-            for (var i = 0; i < snapshot.Length; i++)
-                snapshot[i].Callback?.Invoke(_value);
+            foreach (var subscription in snapshot)
+                subscription.Callback?.Invoke(_value);
         }
 
         private void Unsubscribe(Subscription sub)

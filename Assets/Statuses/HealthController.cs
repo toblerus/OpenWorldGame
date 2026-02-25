@@ -3,24 +3,17 @@ using UnityEngine;
 
 namespace Statuses
 {
-    public class HealthController : MonoBehaviour
+    public class HealthController
     {
-        [SerializeField] private StatusView _view;
-
         private HealthModel _healthModel;
 
-        private void Start()
-        {
-            Setup();
-        }
-
-        private void Setup()
+        public void Setup(StatusView view)
         {
             _healthModel = ServiceLocator.Resolve<HealthModel>();
 
             _healthModel.Health.Subscribe(value =>
             {
-                _view.HealthSlider.value = value / 100f;
+                view.HealthSlider.value = value / 100f;
             });
         }
     }
