@@ -4,6 +4,7 @@ using Inventory;
 using Inventory.Hotbar;
 using PanelCore;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace PlayerControls
 {
@@ -27,6 +28,7 @@ namespace PlayerControls
         private Vector2 lookInput;
         private Vector3 velocity;
         private float xRotation = 0f;
+        private HotBarController _hotbar;
 
         private void Awake()
         {
@@ -39,10 +41,13 @@ namespace PlayerControls
             inputActions.Player.Jump.performed += ctx => Jump();
             inputActions.Player.Inventory.performed += ctx => OpenInventory();
             inputActions.Player.Scroll.performed += ctx => OnScroll(ctx.ReadValue<Vector2>().y);
+            inputActions.Player.Hotbar.performed += ctx => SelectSlot(ctx);
         }
 
         private void Start()
         {
+            _hotbar = ServiceLocator.Resolve<HotBarController>();
+            
             _panelService.IsAnyPanelOpen
                 .Subscribe(isOpen =>
                 {
@@ -121,9 +126,15 @@ namespace PlayerControls
 
             var direction = scroll > 0 ? -1 : 1;
 
-            var hotbar = ServiceLocator.Resolve<HotBarController>();
-            hotbar.Scroll(direction);
+            _hotbar.Scroll(direction);
         }
 
+        private void SelectSlot(InputAction.CallbackContext slot)
+        {
+            if (!int.TryParse(slot.control.name, out var numKeyValue))
+                return;
+
+            _hotbar.SelectSlot(numKeyValue - 1);
+        }
     }
 }
