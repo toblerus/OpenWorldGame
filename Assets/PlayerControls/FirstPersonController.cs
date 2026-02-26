@@ -41,6 +41,15 @@ namespace PlayerControls
             inputActions.Player.Scroll.performed += ctx => OnScroll(ctx.ReadValue<Vector2>().y);
         }
 
+        private void Start()
+        {
+            _panelService.IsAnyPanelOpen
+                .Subscribe(isOpen =>
+                {
+                    Cursor.lockState = isOpen ? CursorLockMode.Confined : CursorLockMode.Locked;
+                });
+        }
+
         private void OnEnable()
         {
             inputActions.Enable();
@@ -107,7 +116,7 @@ namespace PlayerControls
         
         private void OnScroll(float scroll)
         {
-            if (_panelService.IsAnyPanelOpen()) return;
+            if (_panelService.IsAnyPanelOpen.Value) return;
             if (Mathf.Abs(scroll) < 0.1f) return;
 
             var direction = scroll > 0 ? -1 : 1;

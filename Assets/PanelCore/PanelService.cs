@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using ReactiveCore;
 using UnityEngine;
 
 namespace PanelCore
@@ -17,6 +18,9 @@ namespace PanelCore
 
         private readonly Dictionary<Type, Panel> cachedPanels = new Dictionary<Type, Panel>();
         private Panel _currentPanel;
+        private ReactiveValue<bool> _isAnyPanelOpen = new ReactiveValue<bool>();
+        
+        public ReactiveValue<bool> IsAnyPanelOpen => _isAnyPanelOpen;
 
         public void OpenPanel<T>() where T : Panel
         {
@@ -35,6 +39,7 @@ namespace PanelCore
 
             _currentPanel = panel;
             _currentPanel.gameObject.SetActive(true);
+            _isAnyPanelOpen.Value = true;
             _currentPanel.OnOpen();
         }
 
@@ -45,6 +50,7 @@ namespace PanelCore
                 _currentPanel.OnClose();
                 _currentPanel.gameObject.SetActive(false);
                 _currentPanel = null;
+                _isAnyPanelOpen.Value = false;
             }
         }
 
@@ -55,6 +61,7 @@ namespace PanelCore
                 _currentPanel.OnClose();
                 _currentPanel.gameObject.SetActive(false);
                 _currentPanel = null;
+                _isAnyPanelOpen.Value = false;
             }
         }
 
@@ -74,11 +81,5 @@ namespace PanelCore
             Debug.LogWarning($"No panel prefab of type {typeof(T).Name} found.");
             return null;
         }
-        
-        public bool IsAnyPanelOpen()
-        {
-            return _currentPanel != null;
-        }
-
     }
 }
