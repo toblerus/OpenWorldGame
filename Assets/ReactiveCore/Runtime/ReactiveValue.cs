@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
 
-namespace ReactiveCore
+namespace ReactiveCore.Runtime
 {
     public class ReactiveValue<T>
     {
         private T _value;
-        private List<Subscription> _subscriptions = new List<Subscription>();
+        private readonly List<Subscription> _subscriptions = new();
 
         public ReactiveValue(T initialValue = default)
         {
@@ -44,16 +44,26 @@ namespace ReactiveCore
             return Subscribe(onValueChanged, true);
         }
 
-        public PairwiseStream<T> Pairwise()
+        public ReactiveStream<(T previous, T current)> Pairwise()
         {
-            return new PairwiseStream<T>(this);
+            return new ReactiveStream<(T previous, T current)>(observer =>
+            {
+                var previous = _value;
+
+                return Subscribe(current =>
+                {
+                    var pair = (previous, current);
+                    observer(pair);
+                    previous = current;
+                }, true);
+            });
         }
 
         private void NotifySubscribers()
         {
             var snapshot = _subscriptions.ToArray();
-            foreach (var subscription in snapshot)
-                subscription.Callback?.Invoke(_value);
+            for (var i = 0; i < snapshot.Length; i++)
+                snapshot[i].Callback?.Invoke(_value);
         }
 
         private void Unsubscribe(Subscription sub)
@@ -74,52 +84,13 @@ namespace ReactiveCore
 
             public void Dispose()
             {
-                if (_parent == null) return;
+                if (_parent == null)
+                    return;
+
                 _parent.Unsubscribe(this);
                 Callback = null;
                 _parent = null;
             }
-        }
-    }
-
-    public sealed class PairwiseStream<T>
-    {
-        private readonly Func<Action<T, T>, IDisposable> _subscribePairwise;
-
-        public PairwiseStream(ReactiveValue<T> source)
-        {
-            _subscribePairwise = onPair =>
-            {
-                var previous = source.Value;
-
-                return source.Subscribe(current =>
-                {
-                    onPair(previous, current);
-                    previous = current;
-                }, true);
-            };
-        }
-
-        private PairwiseStream(Func<Action<T, T>, IDisposable> subscribePairwise)
-        {
-            _subscribePairwise = subscribePairwise;
-        }
-
-        public PairwiseStream<T> Where(Func<T, T, bool> predicate)
-        {
-            return new PairwiseStream<T>(onPair =>
-            {
-                return _subscribePairwise((previous, current) =>
-                {
-                    if (predicate(previous, current))
-                        onPair(previous, current);
-                });
-            });
-        }
-
-        public IDisposable Subscribe(Action<T, T> onPair)
-        {
-            return _subscribePairwise(onPair);
         }
     }
 }
