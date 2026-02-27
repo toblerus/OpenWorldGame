@@ -6,7 +6,7 @@ namespace Inventory
     public class SlotData
     {
         public int Index;
-        public GameItem Item;
+        public GameItemConfig _itemConfig;
         public int Amount;
     }
 }

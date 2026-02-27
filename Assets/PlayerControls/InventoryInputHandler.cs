@@ -50,7 +50,7 @@ namespace PlayerControls
             {
                 Debug.Log(result.gameObject.name);
                 var slot = result.gameObject.GetComponentInParent<InventorySlotView>();
-                if (slot != null && slot.CurrentGameItem != null)
+                if (slot != null && slot.CurrentGameItemConfig != null)
                 {
                     slot.RequestDrop();
                     break;

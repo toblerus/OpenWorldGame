@@ -10,29 +10,29 @@ namespace Inventory
 {
     public class InventoryModel
     {
-        private List<(GameItem Item, int Amount)> _inventory;
-        public ReactiveValue<(int slotIndex, (GameItem Item, int Amount))> InventorySlotModified { get; } = new();
+        private List<(GameItemConfig Item, int Amount)> _inventory;
+        public ReactiveValue<(int slotIndex, (GameItemConfig Item, int Amount))> InventorySlotModified { get; } = new();
         public ReactiveEmitter ItemDragFinished { get; } = new();
 
-        public void AddItem(GameItem gameItem, int amount)
+        public void AddItem(GameItemConfig gameItemConfig, int amount)
         {
-            if (gameItem == null || amount <= 0) return;
-            if (TryGetSlotForOrEmpty(gameItem, out var slot))
+            if (gameItemConfig == null || amount <= 0) return;
+            if (TryGetSlotForOrEmpty(gameItemConfig, out var slot))
             {
                 EnsureSize(slot + 1);
                 var current = _inventory[slot];
-                var newAmount = current.Item == null ? Mathf.Min(amount, gameItem.MaxStack) : Mathf.Min(current.Amount + amount, gameItem.MaxStack);
-                _inventory[slot] = (gameItem, newAmount);
+                var newAmount = current.Item == null ? Mathf.Min(amount, gameItemConfig.MaxStack) : Mathf.Min(current.Amount + amount, gameItemConfig.MaxStack);
+                _inventory[slot] = (gameItemConfig, newAmount);
                 InventorySlotModified.Value = (slot, _inventory[slot]);
                 return;
             }
             var newSlot = _inventory.Count;
             EnsureSize(newSlot + 1);
-            _inventory[newSlot] = (gameItem, Mathf.Min(amount, gameItem.MaxStack));
+            _inventory[newSlot] = (gameItemConfig, Mathf.Min(amount, gameItemConfig.MaxStack));
             InventorySlotModified.Value = (newSlot, _inventory[newSlot]);
         }
 
-        public List<(GameItem Item, int Amount)> GetAllItems()
+        public List<(GameItemConfig Item, int Amount)> GetAllItems()
         {
             return _inventory;
         }
@@ -90,7 +90,7 @@ namespace Inventory
 
             targetSize += hotBarOffset;
             
-            _inventory ??= new List<(GameItem Item, int Amount)>(targetSize);
+            _inventory ??= new List<(GameItemConfig Item, int Amount)>(targetSize);
 
             while(_inventory.Count <= targetSize)
             {
@@ -100,7 +100,7 @@ namespace Inventory
             foreach (var slot in slots)
             {
                 if (slot == null) continue;
-                var item = slot.Item;
+                var item = slot._itemConfig;
                 var amount = slot.Amount;
                 var index = slot.Index + hotBarOffset;
                 if (item == null || amount <= 0)
@@ -118,12 +118,12 @@ namespace Inventory
             }
         }
 
-        private bool TryGetSlotForOrEmpty(GameItem gameItem, out int slotIndex)
+        private bool TryGetSlotForOrEmpty(GameItemConfig gameItemConfig, out int slotIndex)
         {
             slotIndex = -1;
-            if (gameItem != null)
+            if (gameItemConfig != null)
             {
-                foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == gameItem)).Where(entry => entry.Item != null && gameItem != null && entry.Item == gameItem))
+                foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == gameItemConfig)).Where(entry => entry.Item != null && gameItemConfig != null && entry.Item == gameItemConfig))
                 {
                     slotIndex = _inventory.IndexOf(entry);
                     return true;
@@ -137,9 +137,9 @@ namespace Inventory
             return false;
         }
 
-        private bool TryGetSlotFor(GameItem gameItem, out int slotIndex)
+        private bool TryGetSlotFor(GameItemConfig gameItemConfig, out int slotIndex)
         {
-            foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == gameItem)).Where(entry => entry.Item != null && gameItem != null && entry.Item == gameItem))
+            foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == gameItemConfig)).Where(entry => entry.Item != null && gameItemConfig != null && entry.Item == gameItemConfig))
             {
                 slotIndex = _inventory.IndexOf(entry);
                 return true;
@@ -148,10 +148,10 @@ namespace Inventory
             return false;
         }
 
-        public void RemoveItem(GameItem gameItem, int amount)
+        public void RemoveItem(GameItemConfig gameItemConfig, int amount)
         {
-            if (gameItem == null || amount <= 0) return;
-            if (!TryGetSlotFor(gameItem, out var index)) return;
+            if (gameItemConfig == null || amount <= 0) return;
+            if (!TryGetSlotFor(gameItemConfig, out var index)) return;
             var entry = _inventory[index];
             var remaining = entry.Amount - amount;
             if (remaining <= 0)

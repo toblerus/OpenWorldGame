@@ -20,7 +20,7 @@ namespace Inventory.Hotbar
             for (var slotIndex = 0; slotIndex < _hotBarInventorySlotViews.Count; slotIndex++)
             {
                 var slot = _hotBarInventorySlotViews[slotIndex];
-                result.Add(new SlotData { Index = slotIndex, Item = slot.CurrentGameItem, Amount = slot.CurrentAmount });
+                result.Add(new SlotData { Index = slotIndex, _itemConfig = slot.CurrentGameItemConfig, Amount = slot.CurrentAmount });
             }
             return result;
         }

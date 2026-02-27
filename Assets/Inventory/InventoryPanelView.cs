@@ -16,7 +16,7 @@ namespace Inventory
             for (var slotIndex = 0; slotIndex < _inventorySlotViews.Count; slotIndex++)
             {
                 var slot = _inventorySlotViews[slotIndex];
-                result.Add(new SlotData { Index = slotIndex, Item = slot.CurrentGameItem, Amount = slot.CurrentAmount });
+                result.Add(new SlotData { Index = slotIndex, _itemConfig = slot.CurrentGameItemConfig, Amount = slot.CurrentAmount });
             }
             return result;
         }

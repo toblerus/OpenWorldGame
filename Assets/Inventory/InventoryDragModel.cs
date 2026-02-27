@@ -16,7 +16,7 @@ namespace Hud
         [SerializeField] private GameObject _itemDropPrefab;
 
         private InventorySlotView _sourceSlot;
-        private GameItem _draggedItem;
+        private GameItemConfig _draggedItemConfig;
         private int _draggedCount;
         private bool _isDragging;
         private InventoryModel _inventoryModel;
@@ -32,13 +32,13 @@ namespace Hud
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
         }
 
-        public void StartDrag(InventorySlotView sourceSlot, GameItem item, string amountStr, Vector2 position)
+        public void StartDrag(InventorySlotView sourceSlot, GameItemConfig itemConfig, string amountStr, Vector2 position)
         {
             _sourceSlot = sourceSlot;
-            _draggedItem = item;
+            _draggedItemConfig = itemConfig;
             _draggedCount = int.TryParse(amountStr, out var parsed) ? parsed : 0;
             _isDragging = true;
-            _draggedIcon.sprite = item.Icon;
+            _draggedIcon.sprite = itemConfig.Icon;
             _draggedAmount.text = _draggedCount.ToString();
             _draggedIcon.transform.parent.gameObject.SetActive(true);
             _draggedIcon.gameObject.SetActive(true);
@@ -63,7 +63,7 @@ namespace Hud
             else if (hoveredSlot == null)
             {
                 _inventoryModel.RemoveAt(sourceSlot.SlotIndex, _draggedCount);
-                SpawnItemDrop(_draggedItem, _draggedCount);
+                SpawnItemDrop(_draggedItemConfig, _draggedCount);
                 _inventoryModel.ItemDragFinished.Emit();
             }
             ClearDrag();
@@ -77,9 +77,9 @@ namespace Hud
             _inventoryModel.ItemDragFinished.Emit();
         }
 
-        public void SpawnItemDrop(GameItem item, int amount)
+        public void SpawnItemDrop(GameItemConfig itemConfig, int amount)
         {
-            var model = new ItemDropModel(item, amount);
+            var model = new ItemDropModel(itemConfig, amount);
             var view = Instantiate(_itemDropPrefab, transform.position + transform.forward, Quaternion.identity);
             view.GetComponent<ItemDropView>().Setup(model);
         }
@@ -87,7 +87,7 @@ namespace Hud
         private void ClearDrag()
         {
             _draggedIcon.transform.parent.gameObject.SetActive(false);
-            _draggedItem = null;
+            _draggedItemConfig = null;
             _draggedCount = 0;
             _isDragging = false;
             _sourceSlot = null;

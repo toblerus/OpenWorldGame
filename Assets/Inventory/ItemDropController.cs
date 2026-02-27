@@ -20,7 +20,7 @@ namespace Inventory
         {
             if (_inventoryModel != null)
             {
-                _inventoryModel.AddItem(_model.Item, _model.Amount);
+                _inventoryModel.AddItem(_model.ItemConfig, _model.Amount);
                 Object.Destroy(_view.gameObject);
             }
             else

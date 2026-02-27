@@ -16,3 +16,6 @@ MonoBehaviour:
   Description: This is the fourth item
   Icon: {fileID: 21300000, guid: 04da79fad7be64644ac7710f32006214, type: 3}
   MaxStack: 64
+  InHandPrefab: {fileID: 3848584114399524443, guid: d4b29d72c20ce8b41a2c55498319e85c, type: 3}
+  InHandOffset: {x: 0, y: 0, z: 0}
+  InHandRotation: {x: 0, y: 0, z: 0}

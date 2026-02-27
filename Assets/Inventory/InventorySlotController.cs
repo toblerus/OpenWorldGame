@@ -16,7 +16,7 @@ namespace Inventory
         public void OnBeginDrag(PointerEventData eventData)
         {
             if (!_view.HasItem) return;
-            InventoryDragModel.Instance.StartDrag(_view, _view.CurrentGameItem, _view.CurrentAmount.ToString(), eventData.position);
+            InventoryDragModel.Instance.StartDrag(_view, _view.CurrentGameItemConfig, _view.CurrentAmount.ToString(), eventData.position);
             _view.Clear();
         }
 
@@ -33,8 +33,8 @@ namespace Inventory
                 return;
             }
 
-            Debug.LogError($"[InventorySlotController] Dropping item: {_view.CurrentGameItem.name}, amount: {_view.CurrentAmount}");
-            InventoryDragModel.Instance.SpawnItemDrop(_view.CurrentGameItem, _view.CurrentAmount);
+            Debug.LogError($"[InventorySlotController] Dropping item: {_view.CurrentGameItemConfig.name}, amount: {_view.CurrentAmount}");
+            InventoryDragModel.Instance.SpawnItemDrop(_view.CurrentGameItemConfig, _view.CurrentAmount);
             _view.Clear();
         }
     }

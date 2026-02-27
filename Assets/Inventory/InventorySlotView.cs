@@ -11,11 +11,11 @@ namespace Inventory
     {
         [SerializeField] private Image _itemIcon;
         [SerializeField] private TextMeshProUGUI _itemAmount;
-        [SerializeField] private GameItem _currentGameItem;
+        [SerializeField] private GameItemConfig _currentGameItemConfig;
         [SerializeField] private GameObject _highlight;
 
         public int SlotIndex { get; set; }
-        public GameItem CurrentGameItem => _currentGameItem;
+        public GameItemConfig CurrentGameItemConfig => _currentGameItemConfig;
         public int CurrentAmount => _currentAmount;
         private int _currentAmount;
 
@@ -34,18 +34,18 @@ namespace Inventory
             _controller.Setup(this);
         }
 
-        public void SetupGameItem(GameItem gameItem, int amount)
+        public void SetupGameItem(GameItemConfig gameItemConfig, int amount)
         {
-            _itemIcon.enabled = gameItem != null;
-            _itemIcon.sprite = gameItem?.Icon;
-            _currentGameItem = gameItem;
+            _itemIcon.enabled = gameItemConfig != null;
+            _itemIcon.sprite = gameItemConfig?.Icon;
+            _currentGameItemConfig = gameItemConfig;
             _currentAmount = amount;
             _itemAmount.text = amount > 0 ? amount.ToString() : "";
         }
 
         public void Clear()
         {
-            _currentGameItem = null;
+            _currentGameItemConfig = null;
             _currentAmount = 0;
             _itemIcon.enabled = false;
             _itemAmount.text = "";
@@ -88,7 +88,7 @@ namespace Inventory
                 _currentlyHovered = null;
         }
 
-        public bool HasItem => _currentGameItem != null;
+        public bool HasItem => _currentGameItemConfig != null;
 
         public void Highlight(bool isActive)
         {

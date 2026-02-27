@@ -12,7 +12,7 @@ namespace Inventory
     {
         [SerializeField] private InventoryPanelView _view;
         private InventoryModel _inventoryModel;
-        [SerializeField] private List<GameItem> _defaultItems;
+        [SerializeField] private List<GameItemConfig> _defaultItems;
         private int _hotBarOffset = 15;
 
         private void Start()

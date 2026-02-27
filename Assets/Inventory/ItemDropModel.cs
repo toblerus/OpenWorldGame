@@ -2,12 +2,12 @@ namespace Inventory
 {
     public class ItemDropModel
     {
-        public GameItem Item { get; set; }
+        public GameItemConfig ItemConfig { get; set; }
         public int Amount { get; set; }
 
-        public ItemDropModel(GameItem item, int amount)
+        public ItemDropModel(GameItemConfig itemConfig, int amount)
         {
-            Item = item;
+            ItemConfig = itemConfig;
             Amount = amount;
         }
     }

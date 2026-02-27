@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Hud;
 using Injection;
+using ReactiveCore.Runtime;
 using Saving;
 using UnityEngine;
 
@@ -10,12 +11,12 @@ namespace Inventory.Hotbar
     public class HotBarController
     {
         private HotBarView _hotBarView;
-        private int _selectedIndex = 0;
+        private ReactiveValue<int> _selectedIndex = new(0);
         private int _hotBarOffset = 15;
         private InventoryModel _inventoryModel;
-        public int SelectedIndex => _selectedIndex;
-        
-        public GameItem ActiveItem => _hotBarView.HotBarInventorySlotViews[_selectedIndex].CurrentGameItem;
+
+        private ReactiveValue<GameItemConfig> _activeItemConfig = new();
+        public ReactiveValue<GameItemConfig> ActiveItemConfig => _activeItemConfig;    
 
         public void Setup(HotBarView hotBarView)
         {
@@ -43,27 +44,30 @@ namespace Inventory.Hotbar
             
             _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ => { SaveHotbar(); });
             _inventoryModel.ItemDragFinished.SkipValueOnSubscribe(SaveHotbar);
+            _selectedIndex.Subscribe(value =>
+                _activeItemConfig.Value =
+                    _hotBarView.HotBarInventorySlotViews[value].CurrentGameItemConfig);
         }
         public void SelectSlot(int index)
         {
             var slots = _hotBarView.HotBarInventorySlotViews;
             if (slots.Count == 0) return;
 
-            _selectedIndex = (index + slots.Count) % slots.Count;
+            _selectedIndex.Value = (index + slots.Count) % slots.Count;
             for (var i = 0; i < slots.Count; i++)
-                slots[i].Highlight(i == _selectedIndex);
+                slots[i].Highlight(i == _selectedIndex.Value);
 
-            Debug.Log($"[HotBar] Selected slot: {_selectedIndex}, Item: {ActiveItem?.name ?? "None"}");
+            Debug.Log($"[HotBar] Selected slot: {_selectedIndex?.Value}, Item: {ActiveItemConfig?.Value?.name ?? "None"}");
         }
 
         public void Scroll(int direction)
         {
-            SelectSlot(_selectedIndex + direction);
+            SelectSlot(_selectedIndex.Value + direction);
         }
         
         private void LoadHotbar()
         {
-            if (ES3.KeyExists(SavegameConstants.Inventory))
+            if (ES3.KeyExists(SavegameConstants.HotBar))
             {
                 var inventorySavegame = ES3.Load<List<SlotData>>(SavegameConstants.HotBar);
                 if (inventorySavegame == null) return;
