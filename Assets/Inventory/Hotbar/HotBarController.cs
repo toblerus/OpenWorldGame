@@ -44,9 +44,18 @@ namespace Inventory.Hotbar
             
             _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ => { SaveHotbar(); });
             _inventoryModel.ItemDragFinished.SkipValueOnSubscribe(SaveHotbar);
+
+            var index = 0;
+
             _selectedIndex.Subscribe(value =>
-                _activeItemConfig.Value =
-                    _hotBarView.HotBarInventorySlotViews[value].CurrentGameItemConfig);
+            {
+                index = value;
+                _activeItemConfig.Value = _hotBarView.HotBarInventorySlotViews[value].CurrentGameItemConfig;
+            });
+            _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ =>
+            {
+                _activeItemConfig.Value = _hotBarView.HotBarInventorySlotViews[index].CurrentGameItemConfig;
+            });
         }
         public void SelectSlot(int index)
         {
