@@ -16,6 +16,6 @@ MonoBehaviour:
   Description: This is the third item
   Icon: {fileID: 21300000, guid: a1ffe085431f0614199f653baa7869f8, type: 3}
   MaxStack: 16
-  InHandPrefab: {fileID: 3407825632146520250, guid: c130d40987743a643bfe6a0463e05664, type: 3}
+  InHandPrefab: {fileID: 0}
   InHandOffset: {x: 0, y: 0, z: 0}
   InHandRotation: {x: 0, y: 0, z: 0}
