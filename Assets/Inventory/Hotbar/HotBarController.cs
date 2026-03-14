@@ -30,13 +30,11 @@ namespace Inventory.Hotbar
             {
                 var (index, (item, amount)) = slot;
 
-                if (index >= _hotBarOffset && item != null)
+                if (index >= _hotBarOffset)
                 {
                     var slotMatchingIndex = _hotBarView.HotBarInventorySlotViews.FirstOrDefault(slots => slots.SlotIndex == index);
                     if (slotMatchingIndex != null)
-                    {
                         slotMatchingIndex.SetupGameItem(item, amount);
-                    }
                 }
             });
             

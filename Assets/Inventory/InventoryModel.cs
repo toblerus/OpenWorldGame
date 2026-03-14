@@ -19,6 +19,7 @@ namespace Inventory
             if (gameItemConfig == null || amount <= 0) return;
             if (TryGetSlotForOrEmpty(gameItemConfig, out var slot))
             {
+                Debug.Log("Index: " + slot + " " + _inventory.Count);
                 EnsureSize(slot + 1);
                 var current = _inventory[slot];
                 var newAmount = current.Item == null ? Mathf.Min(amount, gameItemConfig.MaxStack) : Mathf.Min(current.Amount + amount, gameItemConfig.MaxStack);
@@ -77,66 +78,96 @@ namespace Inventory
         public void SetupInventoryFromSlotData(List<SlotData> slots, bool isHotbar = false)
         {
             if (slots == null) return;
-            var targetSize = 0;
 
-            var hotBarOffset = isHotbar ? 15 : 0;
-            
+            var hotbarSize = 5;
+            var inventorySize = 15;
+            var hotBarOffset = isHotbar ? inventorySize : 0;
+            var minimumSize = inventorySize + hotbarSize;
+
+            var targetSize = minimumSize;
+
             foreach (var slot in slots)
             {
                 if (slot == null) continue;
-                if (slot.Index + 1 > targetSize) 
-                    targetSize = slot.Index + 1;
+                var index = slot.Index + hotBarOffset + 1;
+                if (index > targetSize)
+                    targetSize = index;
             }
 
-            targetSize += hotBarOffset;
-            
             _inventory ??= new List<(GameItemConfig Item, int Amount)>(targetSize);
 
-            while(_inventory.Count <= targetSize)
-            {
-                    _inventory.Add((null, 0));
-            }
-            
+            while (_inventory.Count < targetSize)
+                _inventory.Add((null, 0));
+
             foreach (var slot in slots)
             {
                 if (slot == null) continue;
+
                 var item = slot._itemConfig;
                 var amount = slot.Amount;
                 var index = slot.Index + hotBarOffset;
+
                 if (item == null || amount <= 0)
                 {
                     _inventory[index] = (null, 0);
                     continue;
                 }
+
                 var clamped = Mathf.Min(amount, item.MaxStack);
                 _inventory[index] = (item, clamped);
             }
-            
+
             for (var i = 0; i < _inventory.Count; i++)
-            {
                 InventorySlotModified.Value = (i, _inventory[i]);
+        }
+        
+        private bool TryFindSlot(int fromInclusive, int toInclusive, Func<(GameItemConfig Item, int Amount), bool> predicate, out int slotIndex)
+        {
+            slotIndex = -1;
+
+            var step = fromInclusive <= toInclusive ? 1 : -1;
+
+            for (var i = fromInclusive; step > 0 ? i <= toInclusive : i >= toInclusive; i += step)
+            {
+                if (i < 0 || i >= _inventory.Count)
+                    continue;
+
+                if (predicate(_inventory[i]))
+                {
+                    slotIndex = i;
+                    return true;
+                }
             }
+
+            return false;
         }
 
         private bool TryGetSlotForOrEmpty(GameItemConfig gameItemConfig, out int slotIndex)
         {
             slotIndex = -1;
-            if (gameItemConfig != null)
-            {
-                foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == gameItemConfig)).Where(entry => entry.Item != null && gameItemConfig != null && entry.Item == gameItemConfig))
-                {
-                    slotIndex = _inventory.IndexOf(entry);
-                    return true;
-                }
-            }
-            foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == null)).Where(entry => entry.Item == null || entry.Amount <= 0))
-            {
-                slotIndex = _inventory.IndexOf(entry);
+            if (gameItemConfig == null)
+                return false;
+
+            var hotbarStart = 15;
+            var hotbarEnd = 19;
+            var inventoryStart = 0;
+            var inventoryEnd = 14;
+
+            if (TryFindSlot(hotbarStart, hotbarEnd, slot => slot.Item == gameItemConfig && slot.Amount < gameItemConfig.MaxStack, out slotIndex))
                 return true;
-            }
+
+            if (TryFindSlot(hotbarStart, hotbarEnd, slot => slot.Item == null || slot.Amount <= 0, out slotIndex))
+                return true;
+
+            if (TryFindSlot(inventoryStart, inventoryEnd, slot => slot.Item == gameItemConfig && slot.Amount < gameItemConfig.MaxStack, out slotIndex))
+                return true;
+
+            if (TryFindSlot(inventoryStart, inventoryEnd, slot => slot.Item == null || slot.Amount <= 0, out slotIndex))
+                return true;
+
             return false;
         }
-
+        
         private bool TryGetSlotFor(GameItemConfig gameItemConfig, out int slotIndex)
         {
             foreach (var entry in _inventory.Select(t => _inventory.FirstOrDefault(value => value.Item == gameItemConfig)).Where(entry => entry.Item != null && gameItemConfig != null && entry.Item == gameItemConfig))
