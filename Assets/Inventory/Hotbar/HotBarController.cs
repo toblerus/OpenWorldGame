@@ -86,5 +86,10 @@ namespace Inventory.Hotbar
         {
             ES3.Save(SavegameConstants.HotBar, _hotBarView.GetSlotData());
         }
+
+        public void RemoveActiveItem()
+        {
+            _inventoryModel.RemoveItem(_activeItemConfig.Value, 1);
+        }
     }
 }

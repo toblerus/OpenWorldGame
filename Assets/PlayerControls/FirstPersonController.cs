@@ -52,7 +52,7 @@ namespace PlayerControls
 
         private void LeftClickPerformed(InputAction.CallbackContext ctx)
         {
-            
+            _itemPlacementController.PlaceItem();
         }
 
         private void Start()

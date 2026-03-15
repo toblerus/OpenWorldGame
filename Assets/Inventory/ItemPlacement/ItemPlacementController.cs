@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using Injection;
 using Inventory.Hotbar;
 using ReactiveCore.Runtime;
@@ -14,18 +15,23 @@ namespace Inventory.ItemPlacement
         private GameItemConfig _item;
         private int _layerMask;
         private const float MaxDistance = 3;
-        
+        private static Color HighlightColor = Color.white;
+
+
         private Dictionary<GameItemType, GameObject> _placeableItems = new();
         private GameItemConfig _currentGameItem;
+        private GameObject _activeItem;
+        private HotBarController _hotBarController;
 
 
         public void Setup(ItemPlacementView itemPlacementView)
         {
             _view = itemPlacementView;
             _layerMask = LayerMask.GetMask("Ground");
-            var hotBarController = ServiceLocator.Resolve<HotBarController>();
+            ColorUtility.TryParseHtmlString("00FF62", out HighlightColor);
+            _hotBarController = ServiceLocator.Resolve<HotBarController>();
 
-            hotBarController.ActiveItemConfig
+            _hotBarController.ActiveItemConfig
                 .Subscribe(value =>
                 {
                     _currentGameItem = value;
@@ -44,12 +50,12 @@ namespace Inventory.ItemPlacement
             if (Physics.Raycast(ray, out var hit, MaxDistance, _layerMask)) {
                 var objectHit = hit.transform;
 
-                _view.PlacementItemParent.gameObject.SetActive(true);
-                _view.PlacementItemParent.transform.position = hit.point;
+                _view.PlacementItemPreviewParent.gameObject.SetActive(true);
+                _view.PlacementItemPreviewParent.transform.position = hit.point;
             }
             else
             {
-                _view.PlacementItemParent.gameObject.SetActive(false);
+                _view.PlacementItemPreviewParent.gameObject.SetActive(false);
             }
         }
         
@@ -58,10 +64,12 @@ namespace Inventory.ItemPlacement
             foreach (var item in _placeableItems)
             {
                 item.Value.SetActive(false);
+                _activeItem = null;
             }
             
             if (config == null || !config.IsPlaceable)
             {
+                _activeItem = null;
                 return;
             }
 
@@ -71,9 +79,22 @@ namespace Inventory.ItemPlacement
             }
             else
             {
+                gameItem = Object.Instantiate(config.Prefab, _view.PlacementItemPreviewParent);
                 if (config.Prefab != null)
-                    _placeableItems.Add(config.Name, Object.Instantiate(config.Prefab, _view.PlacementItemParent));
+                    _placeableItems.Add(config.Name, gameItem);
             }
+            _activeItem = gameItem;
+        }
+
+        public void PlaceItem()
+        {
+            if(_activeItem == null) return;
+            _activeItem.transform.SetParent(_view.PlacementParent);
+            _placeableItems.Clear();
+            var item = _activeItem;
+            _activeItem = null;
+            _hotBarController.RemoveActiveItem();
+            item.SetActive(true);
         }
     }
 }

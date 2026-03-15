@@ -6,8 +6,10 @@ namespace Inventory.ItemPlacement
 {
     public class ItemPlacementView : MonoBehaviour
     {
-        [SerializeField] private Transform _placementItemParent;
-        public Transform PlacementItemParent => _placementItemParent;
+        [SerializeField] private Transform _placementItemPreviewParent;
+        [SerializeField] private Transform _placementParent;
+        public Transform PlacementItemPreviewParent => _placementItemPreviewParent;
+        public Transform PlacementParent => _placementParent;
         private void Start()
         {
             var controller = ServiceLocator.Resolve<ItemPlacementController>();

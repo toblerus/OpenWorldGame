@@ -27,7 +27,7 @@ namespace Inventory.HandItem
                 item.Value.SetActive(false);
             }
             
-            if(!config.ShowsInHand) return;
+            if(config == null || !config.ShowsInHand) return;
 
             if (config == null) return;
             if (_handItems.TryGetValue(config.Name, out var gameItem))
