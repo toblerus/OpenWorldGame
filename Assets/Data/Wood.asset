@@ -16,6 +16,8 @@ MonoBehaviour:
   Description: This is the first item
   Icon: {fileID: 21300000, guid: eeee6aa4a4649b7478046d795b177294, type: 3}
   MaxStack: 16
-  InHandPrefab: {fileID: 2608638275719285525, guid: 4e96009f45f3d334288a3c3e92b0cb97, type: 3}
+  Prefab: {fileID: 2608638275719285525, guid: 4e96009f45f3d334288a3c3e92b0cb97, type: 3}
+  ShowsInHand: 1
+  IsPlaceable: 0
   InHandOffset: {x: 0, y: 0, z: 0}
   InHandRotation: {x: 0, y: 0, z: 0}

@@ -26,6 +26,8 @@ namespace Inventory.HandItem
             {
                 item.Value.SetActive(false);
             }
+            
+            if(!config.ShowsInHand) return;
 
             if (config == null) return;
             if (_handItems.TryGetValue(config.Name, out var gameItem))
@@ -34,8 +36,8 @@ namespace Inventory.HandItem
             }
             else
             {
-                if (config.InHandPrefab != null)
-                    _handItems.Add(config.Name, Object.Instantiate(config.InHandPrefab, _view.ItemParent));
+                if (config.Prefab != null)
+                    _handItems.Add(config.Name, Object.Instantiate(config.Prefab, _view.ItemParent));
             }
         }
     }

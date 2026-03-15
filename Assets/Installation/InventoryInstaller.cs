@@ -2,6 +2,7 @@
 using Injection;
 using Inventory;
 using Inventory.HandItem;
+using Inventory.ItemPlacement;
 using UnityEngine;
 
 namespace Installation
@@ -12,12 +13,14 @@ namespace Installation
         {
             ServiceLocator.BindSingleton<InventoryModel>();
             ServiceLocator.BindSingleton<HandItemController>();
+            ServiceLocator.BindSingleton<ItemPlacementController>();
         }
 
         public void Uninstall()
         {
             ServiceLocator.Unbind<InventoryModel>();
             ServiceLocator.Unbind<HandItemController>();
+            ServiceLocator.Unbind<ItemPlacementController>();
         }
     }
 }

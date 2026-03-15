@@ -2,6 +2,7 @@ using Hud;
 using Injection;
 using Inventory;
 using Inventory.Hotbar;
+using Inventory.ItemPlacement;
 using PanelCore;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -13,40 +14,51 @@ namespace PlayerControls
         [SerializeField] private PanelService _panelService;
         
         [Header("Movement")]
-        public float moveSpeed = 5f;
-        public float jumpHeight = 2f;
-        public float gravity = -9.81f;
+        [SerializeField] private float _moveSpeed = 5f;
+        [SerializeField] private float _jumpHeight = 2f;
+        [SerializeField] private float _gravity = -9.81f;
 
         [Header("Look")]
-        public float mouseSensitivity = 1f;
-        public Transform cameraTransform;
+        [SerializeField] private float _mouseSensitivity = 1f;
+        [SerializeField] private Transform _cameraTransform;
+        [SerializeField] private Camera _camera;
 
-        private CharacterController controller;
-        private PlayerInputActions inputActions;
+        [SerializeField] private CharacterController _controller;
+        [SerializeField] private PlayerInputActions _inputActions;
 
-        private Vector2 moveInput;
-        private Vector2 lookInput;
-        private Vector3 velocity;
-        private float xRotation = 0f;
+        private Vector2 _moveInput;
+        private Vector2 _lookInput;
+        private Vector3 _velocity;
+        private float _xRotation = 0f;
+        
+        //References
         private HotBarController _hotbar;
+        private ItemPlacementController _itemPlacementController;
 
         private void Awake()
         {
-            controller = GetComponent<CharacterController>();
-            inputActions = new PlayerInputActions();
-            inputActions.Player.Move.performed += ctx => moveInput = ctx.ReadValue<Vector2>();
-            inputActions.Player.Move.canceled += ctx => moveInput = Vector2.zero;
-            inputActions.Player.Look.performed += ctx => lookInput = ctx.ReadValue<Vector2>();
-            inputActions.Player.Look.canceled += ctx => lookInput = Vector2.zero;
-            inputActions.Player.Jump.performed += ctx => Jump();
-            inputActions.Player.Inventory.performed += ctx => OpenInventory();
-            inputActions.Player.Scroll.performed += ctx => OnScroll(ctx.ReadValue<Vector2>().y);
-            inputActions.Player.Hotbar.performed += ctx => SelectSlot(ctx);
+            _controller = GetComponent<CharacterController>();
+            _inputActions = new PlayerInputActions();
+            _inputActions.Player.Move.performed += ctx => _moveInput = ctx.ReadValue<Vector2>();
+            _inputActions.Player.Move.canceled += ctx => _moveInput = Vector2.zero;
+            _inputActions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
+            _inputActions.Player.Look.canceled += ctx => _lookInput = Vector2.zero;
+            _inputActions.Player.Jump.performed += ctx => Jump();
+            _inputActions.Player.Inventory.performed += ctx => OpenInventory();
+            _inputActions.Player.Scroll.performed += ctx => OnScroll(ctx.ReadValue<Vector2>().y);
+            _inputActions.Player.Hotbar.performed += ctx => SelectSlot(ctx);
+            _inputActions.Player.Fire.performed += ctx => LeftClickPerformed(ctx);
+        }
+
+        private void LeftClickPerformed(InputAction.CallbackContext ctx)
+        {
+            
         }
 
         private void Start()
         {
             _hotbar = ServiceLocator.Resolve<HotBarController>();
+            _itemPlacementController = ServiceLocator.Resolve<ItemPlacementController>();
             
             _panelService.IsAnyPanelOpen
                 .Subscribe(isOpen =>
@@ -57,12 +69,12 @@ namespace PlayerControls
 
         private void OnEnable()
         {
-            inputActions.Enable();
+            _inputActions.Enable();
         }
 
         private void OnDisable()
         {
-            inputActions.Disable();
+            _inputActions.Disable();
         }
 
         private void Update()
@@ -73,37 +85,37 @@ namespace PlayerControls
 
         private void HandleMovement()
         {
-            if (controller.isGrounded && velocity.y < 0)
+            if (_controller.isGrounded && _velocity.y < 0)
             {
-                velocity.y = -2f;
+                _velocity.y = -2f;
             }
 
-            var move = transform.right * moveInput.x + transform.forward * moveInput.y;
-            controller.Move(move * moveSpeed * Time.deltaTime);
+            var move = transform.right * _moveInput.x + transform.forward * _moveInput.y;
+            _controller.Move(move * _moveSpeed * Time.deltaTime);
 
-            velocity.y += gravity * Time.deltaTime;
-            controller.Move(velocity * Time.deltaTime);
+            _velocity.y += _gravity * Time.deltaTime;
+            _controller.Move(_velocity * Time.deltaTime);
         }
 
         private void HandleLook()
         {
-            if (_panelService.IsPanelOpen<InventoryPanelView>()) return;
+            if (_panelService.IsAnyPanelOpen.Value) return;
             
-            var mouseX = lookInput.x * mouseSensitivity;
-            var mouseY = lookInput.y * mouseSensitivity;
+            var mouseX = _lookInput.x * _mouseSensitivity;
+            var mouseY = _lookInput.y * _mouseSensitivity;
 
-            xRotation -= mouseY;
-            xRotation = Mathf.Clamp(xRotation, -90f, 90f);
+            _xRotation -= mouseY;
+            _xRotation = Mathf.Clamp(_xRotation, -90f, 90f);
 
-            cameraTransform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
+            _cameraTransform.localRotation = Quaternion.Euler(_xRotation, 0f, 0f);
             transform.Rotate(Vector3.up * mouseX);
         }
 
         private void Jump()
         {
-            if (controller.isGrounded)
+            if (_controller.isGrounded)
             {
-                velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+                _velocity.y = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
             }
         }
 

@@ -5,6 +5,7 @@
         Wood = 1,
         Rock = 2,
         Plastic = 3,
-        Scrap =4,
+        Scrap = 4,
+        Campfire = 5,
     }
 }

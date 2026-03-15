@@ -10,14 +10,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 7075504fb05e48219639e7e98d3adad4, type: 3}
-  m_Name: Plastic
+  m_Name: Campfire
   m_EditorClassIdentifier: 
-  Name: 3
-  Description: This is the third item
-  Icon: {fileID: 21300000, guid: a1ffe085431f0614199f653baa7869f8, type: 3}
-  MaxStack: 16
-  Prefab: {fileID: 3407825632146520250, guid: c130d40987743a643bfe6a0463e05664, type: 3}
+  Name: 5
+  Description: Campfire
+  Icon: {fileID: 21300000, guid: b698498c4b66eac44b437b831f02f826, type: 3}
+  MaxStack: 1
+  Prefab: {fileID: 3995683689144937307, guid: 475ab6c7db9b2b046b92c118bf6a90e9, type: 3}
   ShowsInHand: 0
-  IsPlaceable: 0
+  IsPlaceable: 1
   InHandOffset: {x: 0, y: 0, z: 0}
   InHandRotation: {x: 0, y: 0, z: 0}

@@ -16,6 +16,8 @@ MonoBehaviour:
   Description: This is the second item
   Icon: {fileID: 21300000, guid: 7b9227f72a7a3d54992b68f17d3d0633, type: 3}
   MaxStack: 32
-  InHandPrefab: {fileID: 3278736739092629300, guid: bbb2d797884f3c4459ace6dd3d47b1cd, type: 3}
+  Prefab: {fileID: 3278736739092629300, guid: bbb2d797884f3c4459ace6dd3d47b1cd, type: 3}
+  ShowsInHand: 1
+  IsPlaceable: 0
   InHandOffset: {x: 0, y: 0, z: 0}
   InHandRotation: {x: 0, y: 0, z: 0}
