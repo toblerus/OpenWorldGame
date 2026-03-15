@@ -13,7 +13,7 @@ namespace Inventory.ItemPlacement
         private ItemPlacementView _view;
         private GameItemConfig _item;
         private int _layerMask;
-        private const float MaxDistance = 5;
+        private const float MaxDistance = 3;
         
         private Dictionary<GameItemType, GameObject> _placeableItems = new();
         private GameItemConfig _currentGameItem;
@@ -22,7 +22,7 @@ namespace Inventory.ItemPlacement
         public void Setup(ItemPlacementView itemPlacementView)
         {
             _view = itemPlacementView;
-            _layerMask = LayerMask.GetMask("PlacementParent", "Character");
+            _layerMask = LayerMask.GetMask("Ground");
             var hotBarController = ServiceLocator.Resolve<HotBarController>();
 
             hotBarController.ActiveItemConfig
@@ -41,7 +41,7 @@ namespace Inventory.ItemPlacement
         {
             var ray = camera.ScreenPointToRay(Mouse.current.position.ReadValue());
         
-            if (Physics.Raycast(ray, out var hit, MaxDistance, 3)) {
+            if (Physics.Raycast(ray, out var hit, MaxDistance, _layerMask)) {
                 var objectHit = hit.transform;
 
                 _view.PlacementItemParent.gameObject.SetActive(true);
