@@ -3317,8 +3317,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9cb187b04b714f739ed05008b23a02f8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _interactionDuration: 3
-  _itemType: 1
+  _interactionDuration: 2
+  _itemType: 5
 --- !u!65 &1640748592
 BoxCollider:
   m_ObjectHideFlags: 0

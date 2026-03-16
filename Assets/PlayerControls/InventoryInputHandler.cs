@@ -12,7 +12,7 @@ namespace PlayerControls
     public class InventoryInputHandler : MonoBehaviour
     {
         private PlayerInputActions _input;
-        private ReactiveTimer _holdInteractionTimer = new(1);
+        private ReactiveTimer _holdInteractionTimer = new(.01f);
         private float _currentInteractionHoldingDuration = new();
         private bool _isHolding;
         private IHoldInteractable _interactable;
@@ -35,7 +35,7 @@ namespace PlayerControls
         private void IsHeldIncrease()
         {
             if (!_isHolding) return;
-            _currentInteractionHoldingDuration++;
+            _currentInteractionHoldingDuration += _holdInteractionTimer.IntervalSeconds;
             
             _interactable.Progress(_currentInteractionHoldingDuration / _interactable.InteractionDuration);
             _progressBar.fillAmount = _currentInteractionHoldingDuration / _interactable.InteractionDuration;
