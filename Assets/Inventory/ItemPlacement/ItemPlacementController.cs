@@ -2,6 +2,7 @@
 using System.Linq;
 using Injection;
 using Inventory.Hotbar;
+using InWorld;
 using ReactiveCore.Runtime;
 using UnityEngine;
 using UnityEngine.InputSystem;
@@ -95,6 +96,7 @@ namespace Inventory.ItemPlacement
             _activeItem = null;
             _hotBarController.RemoveActiveItem();
             item.SetActive(true);
+            item.AddComponent<InWorldObjectPersistenceView>();
         }
     }
 }

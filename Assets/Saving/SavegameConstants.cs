@@ -7,5 +7,6 @@
         public const string HealthStatus = "HealthStatus";
         public const string HungerStatus = "HungerStatus";
         public const string ThirstStatus = "ThirstStatus";
+        public const string InWorldObjects = "InWorldObjects";
     }
 }
