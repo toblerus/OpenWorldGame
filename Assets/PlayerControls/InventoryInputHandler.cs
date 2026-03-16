@@ -1,21 +1,75 @@
 using System.Collections.Generic;
 using Interaction;
 using Inventory;
+using ReactiveCore.Runtime;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
+using UnityEngine.UI;
 
 namespace PlayerControls
 {
     public class InventoryInputHandler : MonoBehaviour
     {
         private PlayerInputActions _input;
+        private ReactiveTimer _holdInteractionTimer = new(1);
+        private float _currentInteractionHoldingDuration = new();
+        private bool _isHolding;
+        private IHoldInteractable _interactable;
+        [SerializeField] private Image _progressBar;
 
         private void Awake()
         {
             _input = new PlayerInputActions();
             _input.Player.Interact.performed += ctx => TryInteract();
             _input.Player.Drop.performed += ctx => TryDrop();
+
+            _input.Player.InteractHold.started += ctx => StartHoldInteraction();
+            _input.Player.InteractHold.canceled += ctx => CancelHoldInteraction();
+            
+            _holdInteractionTimer.Start();
+
+            _holdInteractionTimer.Elapsed.Subscribe(IsHeldIncrease);
+        }
+
+        private void IsHeldIncrease()
+        {
+            if (!_isHolding) return;
+            _currentInteractionHoldingDuration++;
+            
+            _interactable.Progress(_currentInteractionHoldingDuration / _interactable.InteractionDuration);
+            _progressBar.fillAmount = _currentInteractionHoldingDuration / _interactable.InteractionDuration;
+            
+            if (!(_currentInteractionHoldingDuration >= _interactable.InteractionDuration)) return;
+            
+            _interactable.Interact();
+            _input.Player.InteractHold.Reset();
+            _interactable = null;
+            _isHolding = false;
+        }
+
+        private void StartHoldInteraction()
+        {
+            if (Camera.main != null)
+            {
+                var camera = Camera.main;
+                Ray ray = new Ray(camera.transform.position, camera.transform.forward);
+                if (Physics.Raycast(ray, out RaycastHit hit, 3f))
+                {
+                    Debug.Log(hit.collider.gameObject.name);
+                    _interactable = hit.collider.transform.GetComponent<IHoldInteractable>();
+
+                    _isHolding = true;
+                }
+            }
+        }
+
+        private void CancelHoldInteraction()
+        {
+            _currentInteractionHoldingDuration = 0;
+            _progressBar.fillAmount = 0;
+            _interactable = null;
+            _isHolding = false;
         }
 
         private void OnEnable() => _input.Enable();
@@ -29,7 +83,7 @@ namespace PlayerControls
                 if (Physics.Raycast(ray, out RaycastHit hit, 3f))
                 {
                     Debug.Log(hit.collider.gameObject.name);
-                    var interactable = hit.collider.transform.parent.GetComponent<IInteractable>();
+                    var interactable = hit.collider.transform.parent?.GetComponent<IInteractable>();
                     interactable?.Interact(this.transform.parent.gameObject);
                 }
             }
