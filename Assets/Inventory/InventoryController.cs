@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Injection;
+using Inventory.ItemConfigs;
 using Saving;
 using UnityEngine;
 using Random = UnityEngine.Random;
@@ -12,11 +13,12 @@ namespace Inventory
     {
         [SerializeField] private InventoryPanelView _view;
         private InventoryModel _inventoryModel;
-        [SerializeField] private List<GameItemConfig> _defaultItems;
         private int _hotBarOffset = 15;
+        private GameItemConfigController _gameItemConfigController;
 
         private void Start()
         {
+            _gameItemConfigController = ServiceLocator.Resolve<GameItemConfigController>();
             Setup();
             LoadInventory();
         }
@@ -57,7 +59,7 @@ namespace Inventory
             else
             {
                 _inventoryModel.SetupInventoryFromSlotData(_view.GetSlotData());
-                foreach (var item in _defaultItems)
+                foreach (var item in _gameItemConfigController.GetAllConfigs())
                 {
                     _inventoryModel.AddItem(item, Random.Range(1, 64));
                 }

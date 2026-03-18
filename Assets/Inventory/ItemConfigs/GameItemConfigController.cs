@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Inventory.ItemConfigs
 {
@@ -11,9 +12,14 @@ namespace Inventory.ItemConfigs
             _view = gameItemConfigView;
         }
 
-        public GameItemConfig RetrieveConfig(GameItemType gameItemType)
+        public GameItemConfig GetConfig(GameItemType gameItemType)
         {
             return _view.GameItemCollectionConfig.GetItemOfType(gameItemType);
+        }
+
+        public List<GameItemConfig> GetAllConfigs()
+        {
+            return _view.GameItemCollectionConfig.GetAllItems();
         }
     }
 }

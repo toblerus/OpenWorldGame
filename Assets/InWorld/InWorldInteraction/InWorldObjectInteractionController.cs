@@ -19,7 +19,7 @@ namespace InWorld.InWorldInteraction
             
             var gameItemConfigController = ServiceLocator.Resolve<GameItemConfigController>();
             
-            _config = gameItemConfigController.RetrieveConfig(itemType);
+            _config = gameItemConfigController.GetConfig(itemType);
             if(_config == null) return;
             
             _model = new InWorldObjectInteractionModel(_config, Random.Range(1, 5));

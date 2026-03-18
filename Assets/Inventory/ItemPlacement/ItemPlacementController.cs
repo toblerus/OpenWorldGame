@@ -11,7 +11,7 @@ namespace Inventory.ItemPlacement
 {
     public class ItemPlacementController {
         private ItemPlacementView _itemPlacementView;
-        private readonly ReactiveTimer _timer = new(0.01f);
+        private readonly ReactiveTimer _timer = new(0.001f);
         private ItemPlacementView _view;
         private GameItemConfig _item;
         private int _layerMask;
@@ -23,6 +23,10 @@ namespace Inventory.ItemPlacement
         private GameItemConfig _currentGameItem;
         private GameObject _activeItem;
         private HotBarController _hotBarController;
+        private Vector3 _targetPosition;
+        private Vector3 _velocity;
+        private float _smoothTime = 0.1f;
+
 
 
         public void Setup(ItemPlacementView itemPlacementView)
@@ -52,7 +56,16 @@ namespace Inventory.ItemPlacement
                 var objectHit = hit.transform;
 
                 _view.PlacementItemPreviewParent.gameObject.SetActive(true);
-                _view.PlacementItemPreviewParent.transform.position = hit.point;
+                
+                _targetPosition = hit.point;
+
+                _view.PlacementItemPreviewParent.transform.position =
+                    Vector3.SmoothDamp(
+                        _view.PlacementItemPreviewParent.transform.position,
+                        _targetPosition,
+                        ref _velocity,
+                        _smoothTime
+                    );
             }
             else
             {

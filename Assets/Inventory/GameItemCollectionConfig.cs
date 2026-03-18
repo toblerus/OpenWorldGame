@@ -15,5 +15,10 @@ namespace Inventory
         {
             return _gameItems.First(item => item.Name == type);
         }
+
+        public List<GameItemConfig> GetAllItems()
+        {
+            return _gameItems;
+        }
     }
 }
