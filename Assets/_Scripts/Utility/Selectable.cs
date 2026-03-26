@@ -8,7 +8,12 @@ namespace _Scripts.Utility
 
         public T Current => Selected.Value;
 
-        protected Selectable(T initialValue = default)
+        protected Selectable()
+        {
+            Selected = new ReactiveValue<T>();
+        }
+
+        protected Selectable(T initialValue)
         {
             Selected = new ReactiveValue<T>(initialValue);
         }

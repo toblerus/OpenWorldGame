@@ -9,11 +9,15 @@ namespace _Scripts.Installation
         public void Install()
         {
             ServiceLocator.BindSingletonNonLazy<CraftingSelectionModel>();
+            ServiceLocator.BindTransient<CraftingCategorySelectionController>();
+            ServiceLocator.BindSingleton<CraftingCategoryPanelController>();
         }
 
         public void Uninstall()
         {
             ServiceLocator.Unbind<CraftingSelectionModel>();
+            ServiceLocator.Unbind<CraftingCategorySelectionController>();
+            ServiceLocator.Unbind<CraftingCategoryPanelController>();
         }
     }
 }
