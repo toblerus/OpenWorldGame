@@ -44,7 +44,7 @@ namespace ReactiveCore.Runtime
             return Subscribe(onValueChanged, true);
         }
 
-        public ReactiveStream<(T previous, T current)> Pairwise()
+        public IReactiveStream<(T previous, T current)> Pairwise()
         {
             return new ReactiveStream<(T previous, T current)>(observer =>
             {

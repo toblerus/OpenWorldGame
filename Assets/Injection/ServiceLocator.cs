@@ -10,6 +10,16 @@ namespace Injection
 
         public static void BindSingleton<T>(Func<T> factory = null) where T : class
         {
+            BindSingletonInternal(factory, false);
+        }
+
+        public static void BindSingletonNonLazy<T>(Func<T> factory = null) where T : class
+        {
+            BindSingletonInternal(factory, true);
+        }
+
+        private static void BindSingletonInternal<T>(Func<T> factory, bool nonLazy) where T : class
+        {
             factories[typeof(T)] = () =>
             {
                 if (!singletons.TryGetValue(typeof(T), out var instance))
@@ -17,8 +27,12 @@ namespace Injection
                     instance = factory != null ? factory() : Activator.CreateInstance<T>();
                     singletons[typeof(T)] = instance;
                 }
+
                 return instance;
             };
+
+            if (nonLazy)
+                Resolve<T>();
         }
 
         public static void BindTransient<T>(Func<T> factory = null) where T : class
@@ -32,9 +46,7 @@ namespace Injection
         public static T Resolve<T>() where T : class
         {
             if (factories.TryGetValue(typeof(T), out var factory))
-            {
                 return (T)factory();
-            }
 
             throw new Exception($"Type {typeof(T).Name} not bound in ServiceLocator.");
         }

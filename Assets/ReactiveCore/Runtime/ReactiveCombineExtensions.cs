@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 namespace ReactiveCore.Runtime
 {
+    [EditorBrowsable(EditorBrowsableState.Never)]
     public static class ReactiveCombineExtensions
     {
-        public static ReactiveStream<bool[]> Combine(this ReactiveValue<bool> first, params ReactiveValue<bool>[] others)
+        public static IReactiveStream<bool[]> Combine(this ReactiveValue<bool> first, params ReactiveValue<bool>[] others)
         {
             return new ReactiveStream<bool[]>(observer =>
             {
@@ -45,12 +47,11 @@ namespace ReactiveCore.Runtime
                     }));
                 }
 
-                var composite = new CompositeSubscription(subs);
-                return composite;
+                return new CompositeSubscription(subs);
             });
         }
 
-        public static ReactiveStream<bool> CombineUsingAnd(this ReactiveValue<bool> first, params ReactiveValue<bool>[] others)
+        public static IReactiveStream<bool> CombineUsingAnd(this ReactiveValue<bool> first, params ReactiveValue<bool>[] others)
         {
             return first
                 .Combine(others)
@@ -66,7 +67,7 @@ namespace ReactiveCore.Runtime
                 });
         }
 
-        public static ReactiveStream<bool> CombineUsingOr(this ReactiveValue<bool> first, params ReactiveValue<bool>[] others)
+        public static IReactiveStream<bool> CombineUsingOr(this ReactiveValue<bool> first, params ReactiveValue<bool>[] others)
         {
             return first
                 .Combine(others)
@@ -82,7 +83,7 @@ namespace ReactiveCore.Runtime
                 });
         }
 
-        public static ReactiveStream<(T1, T2)> Combine<T1, T2>(this ReactiveValue<T1> first, ReactiveValue<T2> second)
+        public static IReactiveStream<(T1, T2)> Combine<T1, T2>(this ReactiveValue<T1> first, ReactiveValue<T2> second)
         {
             return new ReactiveStream<(T1, T2)>(observer =>
             {
@@ -108,13 +109,11 @@ namespace ReactiveCore.Runtime
                     Emit();
                 });
 
-                var subs = new List<IDisposable> { s1, s2 };
-                var composite = new CompositeSubscription(subs);
-                return composite;
+                return new CompositeSubscription(new List<IDisposable> { s1, s2 });
             });
         }
 
-        public static ReactiveStream<(T1, T2, T3)> Combine<T1, T2, T3>(this ReactiveValue<T1> first, ReactiveValue<T2> second, ReactiveValue<T3> third)
+        public static IReactiveStream<(T1, T2, T3)> Combine<T1, T2, T3>(this ReactiveValue<T1> first, ReactiveValue<T2> second, ReactiveValue<T3> third)
         {
             return new ReactiveStream<(T1, T2, T3)>(observer =>
             {
@@ -147,9 +146,7 @@ namespace ReactiveCore.Runtime
                     Emit();
                 });
 
-                var subs = new List<IDisposable> { s1, s2, s3 };
-                var composite = new CompositeSubscription(subs);
-                return composite;
+                return new CompositeSubscription(new List<IDisposable> { s1, s2, s3 });
             });
         }
     }

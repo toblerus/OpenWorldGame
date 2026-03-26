@@ -7,6 +7,11 @@ namespace InWorld
     public class InWorldObjectPersistenceModel
     {
         private readonly List<GameObject> _inWorldObjects = new();
+
+        public InWorldObjectPersistenceModel()
+        {
+            Load();
+        }
         
         public void Register(InWorldObjectPersistenceView inWorldObjectPersistenceView)
         {

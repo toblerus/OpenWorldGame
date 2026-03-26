@@ -2,7 +2,7 @@
 
 namespace ReactiveCore.Runtime
 {
-    public class ReactiveStream<T>
+    internal class ReactiveStream<T> : IReactiveStream<T>
     {
         private readonly Func<Action<T>, IDisposable> _subscribe;
 
@@ -16,7 +16,7 @@ namespace ReactiveCore.Runtime
             return _subscribe(onNext);
         }
 
-        public ReactiveStream<T> Where(Func<T, bool> predicate)
+        public IReactiveStream<T> Where(Func<T, bool> predicate)
         {
             return new ReactiveStream<T>(observer =>
             {
@@ -28,7 +28,7 @@ namespace ReactiveCore.Runtime
             });
         }
 
-        public ReactiveStream<TResult> Map<TResult>(Func<T, TResult> selector)
+        public IReactiveStream<TResult> Map<TResult>(Func<T, TResult> selector)
         {
             return new ReactiveStream<TResult>(observer =>
             {

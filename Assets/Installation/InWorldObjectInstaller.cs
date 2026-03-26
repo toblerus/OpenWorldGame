@@ -10,9 +10,8 @@ namespace Installation
         public void Install()
         {
             ServiceLocator.BindSingleton<InWorldObjectPersistenceController>();
-            ServiceLocator.BindSingleton<InWorldObjectPersistenceModel>();
+            ServiceLocator.BindSingletonNonLazy<InWorldObjectPersistenceModel>();
             ServiceLocator.BindTransient<InWorldObjectInteractionController>();
-            ServiceLocator.BindSingleton<InWorldObjectInteractionModel>();
         }
 
         public void Uninstall()
