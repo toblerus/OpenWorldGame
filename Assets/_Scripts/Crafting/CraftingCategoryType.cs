@@ -1,7 +1,10 @@
+using System.ComponentModel;
+
 namespace _Scripts.Crafting
 {
     public enum CraftingCategoryType
     {
+        [Description("None")]
         None = 0,
         Food = 1,
         Other = 2,

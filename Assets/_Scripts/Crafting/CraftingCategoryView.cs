@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Scripts.Crafting
 {
-    public class CraftingCategorySelectionView : MonoBehaviour
+    public class CraftingCategoryView : MonoBehaviour
     {
         [SerializeField] private ReactiveButton _selectButton;
         public ReactiveButton SelectButton => _selectButton;
@@ -14,7 +14,7 @@ namespace _Scripts.Crafting
         
         private void Start()
         {
-            var controller = ServiceLocator.Resolve<CraftingCategorySelectionController>();
+            var controller = ServiceLocator.Resolve<CraftingCategoryController>();
             controller.Setup(this);
         }
 

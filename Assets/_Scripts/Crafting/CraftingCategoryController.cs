@@ -3,18 +3,18 @@ using UnityEngine;
 
 namespace _Scripts.Crafting
 {
-    public class CraftingCategorySelectionController
+    public class CraftingCategoryController
     {
-        private CraftingCategorySelectionView _view;
+        private CraftingCategoryView _view;
         private CraftingSelectionModel _categorySelectionModel;
 
-        public void Setup(CraftingCategorySelectionView craftingCategorySelectionView)
+        public void Setup(CraftingCategoryView craftingCategoryView)
         {
-            _view = craftingCategorySelectionView;
+            _view = craftingCategoryView;
             _categorySelectionModel = ServiceLocator.Resolve<CraftingSelectionModel>();
 
             _view.SelectButton.OnClickInteractable
-                .Subscribe(() =>
+                .SkipValueOnSubscribe(() =>
                 {
                     _categorySelectionModel.Select(_view.CategoryType);
                 });
