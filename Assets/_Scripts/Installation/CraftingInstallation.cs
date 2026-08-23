@@ -8,16 +8,19 @@ namespace _Scripts.Installation
     {
         public void Install()
         {
-            ServiceLocator.BindSingletonNonLazy<CraftingSelectionModel>();
+            ServiceLocator.BindSingletonNonLazy<CraftingCategorySelectionModel>();
+            ServiceLocator.BindSingletonNonLazy<CraftingGameItemSelectionModel>();
             ServiceLocator.BindTransient<CraftingCategoryController>();
             ServiceLocator.BindSingleton<CraftingPanelController>();
+            ServiceLocator.BindTransient<CraftingGameItemController>();
         }
 
         public void Uninstall()
         {
-            ServiceLocator.Unbind<CraftingSelectionModel>();
+            ServiceLocator.Unbind<CraftingCategorySelectionModel>();
             ServiceLocator.Unbind<CraftingCategoryController>();
             ServiceLocator.Unbind<CraftingPanelController>();
+            ServiceLocator.Unbind<CraftingGameItemController>();
         }
     }
 }

@@ -5,18 +5,18 @@ namespace _Scripts.Crafting
 {
     public class CraftingCategoryController
     {
-        private CraftingCategoryView _view;
-        private CraftingSelectionModel _categorySelectionModel;
+        private CraftingCategoryItemView _itemView;
+        private CraftingCategorySelectionModel _categoryCategorySelectionModel;
 
-        public void Setup(CraftingCategoryView craftingCategoryView)
+        public void Setup(CraftingCategoryItemView craftingCategoryItemView)
         {
-            _view = craftingCategoryView;
-            _categorySelectionModel = ServiceLocator.Resolve<CraftingSelectionModel>();
+            _itemView = craftingCategoryItemView;
+            _categoryCategorySelectionModel = ServiceLocator.Resolve<CraftingCategorySelectionModel>();
 
-            _view.SelectButton.OnClickInteractable
+            _itemView.SelectButton.OnClickInteractable
                 .SkipValueOnSubscribe(() =>
                 {
-                    _categorySelectionModel.Select(_view.CategoryType);
+                    _categoryCategorySelectionModel.Select(_itemView.CategoryType);
                 });
         }
     }

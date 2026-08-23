@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace _Scripts.Crafting
 {
-    public class CraftingCategoryView : MonoBehaviour
+    public class CraftingCategoryItemView : MonoBehaviour
     {
         [SerializeField] private ReactiveButton _selectButton;
         public ReactiveButton SelectButton => _selectButton;
