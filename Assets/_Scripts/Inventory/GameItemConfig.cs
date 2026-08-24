@@ -1,4 +1,5 @@
 ﻿using System;
+using _Scripts.Crafting;
 using UnityEngine;
 
 namespace _Scripts.Inventory
@@ -8,6 +9,7 @@ namespace _Scripts.Inventory
     public class GameItemConfig : ScriptableObject
     {
         public GameItemType Name;
+        public CraftingCategoryType Category;
         public string Description;
         public Sprite Icon;
         public int MaxStack;

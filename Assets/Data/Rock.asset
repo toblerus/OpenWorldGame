@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Rock
   m_EditorClassIdentifier: 
   Name: 2
+  Category: 6
   Description: This is the second item
   Icon: {fileID: 21300000, guid: 7b9227f72a7a3d54992b68f17d3d0633, type: 3}
   MaxStack: 32

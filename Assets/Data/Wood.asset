@@ -13,6 +13,7 @@ MonoBehaviour:
   m_Name: Wood
   m_EditorClassIdentifier: 
   Name: 1
+  Category: 6
   Description: This is the first item
   Icon: {fileID: 21300000, guid: eeee6aa4a4649b7478046d795b177294, type: 3}
   MaxStack: 16

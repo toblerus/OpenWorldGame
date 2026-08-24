@@ -13,7 +13,7 @@ namespace _Scripts.Inventory
 
         public GameItemConfig GetItemOfType(GameItemType type)
         {
-            return _gameItems.First(item => item.Name == type);
+            return _gameItems.FirstOrDefault(item => item.Name == type);
         }
 
         public List<GameItemConfig> GetAllItems()

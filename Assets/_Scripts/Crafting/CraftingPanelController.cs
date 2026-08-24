@@ -25,6 +25,14 @@ namespace _Scripts.Crafting
                 view.SetCategoryType(category);
                 button.gameObject.SetActive(category != CraftingCategoryType.None);
             }
+            
+            foreach (var gameItemType in (GameItemType[]) Enum.GetValues(typeof(GameItemType)))
+            {
+                var button = Object.Instantiate(_view.GameItemButtonPrefab, _view.GameItemParent);
+                var view = button.GetComponent<CraftingGameItemView>();
+                view.SetGameItemType(gameItemType);
+                button.gameObject.SetActive(gameItemType != GameItemType.None);
+            }
 
             _categorySelectionModel.Selected.Combine(_gameItemSelectioNModel.Selected).Subscribe(UpdateCraftingPanel);
             
