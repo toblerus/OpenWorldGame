@@ -17,7 +17,7 @@ namespace _Scripts.InWorld.InWorldInteraction
             _view = inWorldObjectInteractionView;
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
             
-            var gameItemConfigController = ServiceLocator.Resolve<GameItemConfigController>();
+            var gameItemConfigController = ServiceLocator.Resolve<GameItemConfigModel>();
             
             _config = gameItemConfigController.GetConfig(itemType);
             if(_config == null) return;

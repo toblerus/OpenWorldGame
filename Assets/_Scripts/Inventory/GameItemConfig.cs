@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using _Scripts.Crafting;
 using UnityEngine;
 
@@ -18,5 +19,13 @@ namespace _Scripts.Inventory
         public bool IsPlaceable;
         public Vector3 InHandOffset;
         public Vector3 InHandRotation;
+        public List<CraftingIngredient> Ingredients;
+    }
+
+    [Serializable]
+    public class CraftingIngredient
+    {
+        public GameItemType Type;
+        public int Amount;
     }
 }

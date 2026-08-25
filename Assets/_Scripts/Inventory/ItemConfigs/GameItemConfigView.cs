@@ -10,7 +10,7 @@ namespace _Scripts.Inventory.ItemConfigs
         
         private void Start()
         {
-            var controller = ServiceLocator.Resolve<GameItemConfigController>();
+            var controller = ServiceLocator.Resolve<GameItemConfigModel>();
             controller.Setup(this);
         }
     }

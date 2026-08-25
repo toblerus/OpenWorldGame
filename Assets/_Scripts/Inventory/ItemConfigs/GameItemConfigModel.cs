@@ -2,7 +2,7 @@
 
 namespace _Scripts.Inventory.ItemConfigs
 {
-    public class GameItemConfigController
+    public class GameItemConfigModel
     {
         private GameItemConfigView _view;
 
@@ -24,6 +24,11 @@ namespace _Scripts.Inventory.ItemConfigs
         public string GetItemDescription(GameItemType gameItemType)
         {
             return _view.GameItemCollectionConfig.GetItemOfType(gameItemType)?.Description;
+        }
+
+        public List<CraftingIngredient> GetItemIngredients(GameItemType gameItemType)
+        {
+            return _view.GameItemCollectionConfig.GetItemOfType(gameItemType)?.Ingredients;
         }
     }
 }

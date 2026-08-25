@@ -13,11 +13,11 @@ namespace _Scripts.Inventory
         [SerializeField] private InventoryPanelView _view;
         private InventoryModel _inventoryModel;
         private int _hotBarOffset = 15;
-        private GameItemConfigController _gameItemConfigController;
+        private GameItemConfigModel _gameItemConfigModel;
 
         private void Start()
         {
-            _gameItemConfigController = ServiceLocator.Resolve<GameItemConfigController>();
+            _gameItemConfigModel = ServiceLocator.Resolve<GameItemConfigModel>();
             Setup();
             LoadInventory();
         }
@@ -58,7 +58,7 @@ namespace _Scripts.Inventory
             else
             {
                 _inventoryModel.SetupInventoryFromSlotData(_view.GetSlotData());
-                foreach (var item in _gameItemConfigController.GetAllConfigs())
+                foreach (var item in _gameItemConfigModel.GetAllConfigs())
                 {
                     _inventoryModel.AddItem(item, Random.Range(1, 64));
                 }

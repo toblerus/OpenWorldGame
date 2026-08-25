@@ -8,12 +8,12 @@ namespace _Scripts.Installation
     {
         public void Install()
         {
-            ServiceLocator.BindSingleton<GameItemConfigController>();
+            ServiceLocator.BindSingleton<GameItemConfigModel>();
         }
 
         public void Uninstall()
         {
-            ServiceLocator.Unbind<GameItemConfigController>();
+            ServiceLocator.Unbind<GameItemConfigModel>();
         }
     }
 }

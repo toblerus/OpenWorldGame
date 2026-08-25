@@ -15,7 +15,7 @@ namespace _Scripts.Crafting
         public ReactiveButton SelectButton => _selectButton;
         
         private GameItemType _gameItemType;
-        private GameItemConfigController _gameItemConfigController;
+        private GameItemConfigModel _gameItemConfigModel;
         private CraftingCategoryType _category;
         public GameItemType GameItemType => _gameItemType;
         public CraftingCategoryType Category => _category;
@@ -30,8 +30,8 @@ namespace _Scripts.Crafting
         {
             _gameItemType = gameItemType;
             _listHeaderText.text = _gameItemType.ToString();
-            _gameItemConfigController = ServiceLocator.Resolve<GameItemConfigController>();
-            var config = _gameItemConfigController.GetConfig(_gameItemType);
+            _gameItemConfigModel = ServiceLocator.Resolve<GameItemConfigModel>();
+            var config = _gameItemConfigModel.GetConfig(_gameItemType);
             if(config != null)
                 _category = config.Category;
         }

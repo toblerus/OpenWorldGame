@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using _Scripts.Injection;
 using _Scripts.Inventory;
 using _Scripts.Inventory.ItemConfigs;
@@ -12,14 +14,15 @@ namespace _Scripts.Crafting
         private CraftingPanelView _view;
         private CraftingCategorySelectionModel _categorySelectionModel;
         private CraftingGameItemSelectionModel _gameItemSelectioNModel;
-        private GameItemConfigController _gameItemConfigController;
+        private GameItemConfigModel _gameItemConfigModel;
+        private List<CraftingIngredientView> _ingredientViewPool;
 
         public void Setup(CraftingPanelView craftingPanelView)
         {
             _view = craftingPanelView;
             _categorySelectionModel = ServiceLocator.Resolve<CraftingCategorySelectionModel>();
             _gameItemSelectioNModel = ServiceLocator.Resolve<CraftingGameItemSelectionModel>();
-            _gameItemConfigController = ServiceLocator.Resolve<GameItemConfigController>();
+            _gameItemConfigModel = ServiceLocator.Resolve<GameItemConfigModel>();
 
             
             foreach (var category in (CraftingCategoryType[]) Enum.GetValues(typeof(CraftingCategoryType)))
@@ -47,10 +50,49 @@ namespace _Scripts.Crafting
         {
             _view.ListHeaderText = selectedItem.category.ToString();
             _view.ItemName = selectedItem.item.ToString();
-            _view.ItemDescription = _gameItemConfigController.GetItemDescription(selectedItem.item);
+            _view.ItemDescription = _gameItemConfigModel.GetItemDescription(selectedItem.item);
 
             _view.ListPanel.gameObject.SetActive(selectedItem.category != CraftingCategoryType.None);
             _view.CraftingPanel.gameObject.SetActive(selectedItem.item != GameItemType.None);
+
+            var ingredients = _gameItemConfigModel.GetItemIngredients(selectedItem.item);
+            ClearIngredientViews();
+            foreach (var ingredient in ingredients)
+            {
+                SetupIngredientView(ingredient);
+            }
+        }
+        
+        private void ClearIngredientViews()
+        {
+            foreach (var ingredientView in _ingredientViewPool)
+            {
+                ingredientView.GameItemType = GameItemType.None;
+                ingredientView.gameObject.SetActive(false);
+                ingredientView.ItemName = string.Empty;
+                ingredientView.Amount = string.Empty;
+            }
+        }
+
+        private void SetupIngredientView(CraftingIngredient ingredient)
+        {
+            var ingredientView = GetEmptyIngredientView();
+            ingredientView.GameItemType = ingredient.Type;
+            ingredientView.gameObject.SetActive(true);
+            ingredientView.ItemName = ingredient.Type.ToString();
+            ingredientView.Amount = ingredient.Amount.ToString();
+        }
+        
+        private CraftingIngredientView GetEmptyIngredientView()
+        {
+            var view = _ingredientViewPool.FirstOrDefault(view => view.GameItemType ==  GameItemType.None);
+            
+            if (view != null) return view;
+            
+            var instance = Object.Instantiate(_view.IngredientPrefab, _view.IngredientParent);
+            var ingredientView = instance.GetComponent<CraftingIngredientView>();
+            _ingredientViewPool.Add(ingredientView);
+            return ingredientView;
         }
     }
 }
