@@ -1,6 +1,7 @@
 ﻿using System;
 using _Scripts.Injection;
 using _Scripts.Inventory;
+using _Scripts.Inventory.ItemConfigs;
 using ReactiveCore.Runtime;
 using Object = UnityEngine.Object;
 
@@ -11,12 +12,15 @@ namespace _Scripts.Crafting
         private CraftingPanelView _view;
         private CraftingCategorySelectionModel _categorySelectionModel;
         private CraftingGameItemSelectionModel _gameItemSelectioNModel;
+        private GameItemConfigController _gameItemConfigController;
 
         public void Setup(CraftingPanelView craftingPanelView)
         {
             _view = craftingPanelView;
             _categorySelectionModel = ServiceLocator.Resolve<CraftingCategorySelectionModel>();
             _gameItemSelectioNModel = ServiceLocator.Resolve<CraftingGameItemSelectionModel>();
+            _gameItemConfigController = ServiceLocator.Resolve<GameItemConfigController>();
+
             
             foreach (var category in (CraftingCategoryType[]) Enum.GetValues(typeof(CraftingCategoryType)))
             {
@@ -41,7 +45,9 @@ namespace _Scripts.Crafting
 
         private void UpdateCraftingPanel((CraftingCategoryType category, GameItemType item) selectedItem)
         {
-            _view.ListHeaderText.text = selectedItem.category.ToString();
+            _view.ListHeaderText = selectedItem.category.ToString();
+            _view.ItemName = selectedItem.item.ToString();
+            _view.ItemDescription = _gameItemConfigController.GetItemDescription(selectedItem.item);
 
             _view.ListPanel.gameObject.SetActive(selectedItem.category != CraftingCategoryType.None);
             _view.CraftingPanel.gameObject.SetActive(selectedItem.item != GameItemType.None);

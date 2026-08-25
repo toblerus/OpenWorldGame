@@ -1,6 +1,7 @@
 ﻿using _Scripts.Injection;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace _Scripts.Crafting
 {
@@ -20,14 +21,29 @@ namespace _Scripts.Crafting
         [SerializeField] private GameObject _gameItemButtonPrefab;
         
         public GameObject ListPanel => _listPanel;
-        public TextMeshProUGUI ListHeaderText => _listHeaderText;
+        public string ListHeaderText
+        {
+                set => _listHeaderText.text = value;
+        }
+
         public Transform GameItemParent => _gameItemParent;
         public GameObject GameItemButtonPrefab => _gameItemButtonPrefab;
         
         //Crafting Panel
         [SerializeField] private GameObject _craftingPanel;
+        [SerializeField] private TextMeshProUGUI _itemName;
+        [SerializeField] private TextMeshProUGUI _itemDescription;
         public GameObject CraftingPanel => _craftingPanel;
-        
+        public string ItemName
+        {
+            set => _itemName.text = value;
+        }
+
+        public string ItemDescription
+        {
+            set => _itemDescription.text = value;
+        }
+
         private void Start()
         {
             var controller = ServiceLocator.Resolve<CraftingPanelController>();

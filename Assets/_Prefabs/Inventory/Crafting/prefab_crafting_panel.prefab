@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 5211457351821091054}
   - component: {fileID: 8521541935313588421}
   m_Layer: 5
-  m_Name: txt_header
+  m_Name: txt_item_header
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1449,6 +1449,8 @@ MonoBehaviour:
   _gameItemParent: {fileID: 6426149459846875670}
   _gameItemButtonPrefab: {fileID: 455285976639964528, guid: eefe43320a1245c498d8d3a5fd5a97ac, type: 3}
   _craftingPanel: {fileID: 5992714966902859205}
+  _itemName: {fileID: 8521541935313588421}
+  _itemDescription: {fileID: 7692265855014391957}
 --- !u!1 &8839706062510562427
 GameObject:
   m_ObjectHideFlags: 0

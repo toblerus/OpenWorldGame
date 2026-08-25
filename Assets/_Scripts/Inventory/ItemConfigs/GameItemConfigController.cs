@@ -20,5 +20,10 @@ namespace _Scripts.Inventory.ItemConfigs
         {
             return _view.GameItemCollectionConfig.GetAllItems();
         }
+
+        public string GetItemDescription(GameItemType gameItemType)
+        {
+            return _view.GameItemCollectionConfig.GetItemOfType(gameItemType)?.Description;
+        }
     }
 }
