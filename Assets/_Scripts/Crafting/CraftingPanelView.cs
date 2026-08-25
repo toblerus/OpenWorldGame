@@ -35,6 +35,7 @@ namespace _Scripts.Crafting
         [SerializeField] private TextMeshProUGUI _itemDescription;
         [SerializeField] private Transform _ingredientParent;
         [SerializeField] private GameObject _ingredientPrefab;
+        [SerializeField] private Image _itemSprite;
 
         public GameObject CraftingPanel => _craftingPanel;
         public string ItemName
@@ -49,6 +50,10 @@ namespace _Scripts.Crafting
         
         public Transform IngredientParent => _ingredientParent;
         public GameObject IngredientPrefab => _ingredientPrefab;
+        public Sprite ItemSprite
+        {
+            set => _itemSprite.sprite = value;
+        }
 
         private void Start()
         {

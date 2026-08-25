@@ -22,3 +22,8 @@ MonoBehaviour:
   IsPlaceable: 0
   InHandOffset: {x: 0, y: 0, z: 0}
   InHandRotation: {x: 0, y: 0, z: 0}
+  Ingredients:
+  - Type: 5
+    Amount: 4
+  - Type: 1
+    Amount: 2

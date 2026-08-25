@@ -76,6 +76,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _selectButton: {fileID: 7013236777700789587}
   _listHeaderText: {fileID: 7266085487288317265}
+  _itemSprite: {fileID: 6692066588668612343}
 --- !u!114 &1767593234289900571
 MonoBehaviour:
   m_ObjectHideFlags: 0

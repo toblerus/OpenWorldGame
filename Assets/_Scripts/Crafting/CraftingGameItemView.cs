@@ -1,10 +1,10 @@
-using System.Linq;
 using _Scripts.Injection;
 using _Scripts.Inventory;
 using _Scripts.Inventory.ItemConfigs;
 using ReactiveCore.Runtime;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace _Scripts.Crafting
 {
@@ -12,6 +12,7 @@ namespace _Scripts.Crafting
     {
         [SerializeField] private ReactiveButton _selectButton;
         [SerializeField] private TextMeshProUGUI _listHeaderText;
+        [SerializeField] private Image _itemSprite;
         public ReactiveButton SelectButton => _selectButton;
         
         private GameItemType _gameItemType;
@@ -34,6 +35,7 @@ namespace _Scripts.Crafting
             var config = _gameItemConfigModel.GetConfig(_gameItemType);
             if(config != null)
                 _category = config.Category;
+            _itemSprite.sprite = _gameItemConfigModel.GetItemSprite(_gameItemType);
         }
     }
 }

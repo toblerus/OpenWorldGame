@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace _Scripts.Inventory.ItemConfigs
 {
@@ -29,6 +30,11 @@ namespace _Scripts.Inventory.ItemConfigs
         public List<CraftingIngredient> GetItemIngredients(GameItemType gameItemType)
         {
             return _view.GameItemCollectionConfig.GetItemOfType(gameItemType)?.Ingredients;
+        }
+
+        public Sprite GetItemSprite(GameItemType gameItemType)
+        {
+            return _view.GameItemCollectionConfig.GetItemOfType(gameItemType)?.Icon;
         }
     }
 }

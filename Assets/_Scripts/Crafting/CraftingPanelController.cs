@@ -15,7 +15,7 @@ namespace _Scripts.Crafting
         private CraftingCategorySelectionModel _categorySelectionModel;
         private CraftingGameItemSelectionModel _gameItemSelectioNModel;
         private GameItemConfigModel _gameItemConfigModel;
-        private List<CraftingIngredientView> _ingredientViewPool;
+        private List<CraftingIngredientView> _ingredientViewPool = new();
 
         public void Setup(CraftingPanelView craftingPanelView)
         {
@@ -35,6 +35,7 @@ namespace _Scripts.Crafting
             
             foreach (var gameItemType in (GameItemType[]) Enum.GetValues(typeof(GameItemType)))
             {
+                var sprite = _gameItemConfigModel.GetItemIngredients(gameItemType);
                 var button = Object.Instantiate(_view.GameItemButtonPrefab, _view.GameItemParent);
                 var view = button.GetComponent<CraftingGameItemView>();
                 view.SetGameItemType(gameItemType);
@@ -51,12 +52,14 @@ namespace _Scripts.Crafting
             _view.ListHeaderText = selectedItem.category.ToString();
             _view.ItemName = selectedItem.item.ToString();
             _view.ItemDescription = _gameItemConfigModel.GetItemDescription(selectedItem.item);
+            _view.ItemSprite =  _gameItemConfigModel.GetItemSprite(selectedItem.item);
 
             _view.ListPanel.gameObject.SetActive(selectedItem.category != CraftingCategoryType.None);
             _view.CraftingPanel.gameObject.SetActive(selectedItem.item != GameItemType.None);
 
             var ingredients = _gameItemConfigModel.GetItemIngredients(selectedItem.item);
             ClearIngredientViews();
+            if (ingredients is not { Count: > 0 }) return;
             foreach (var ingredient in ingredients)
             {
                 SetupIngredientView(ingredient);
@@ -65,22 +68,18 @@ namespace _Scripts.Crafting
         
         private void ClearIngredientViews()
         {
+            if (_ingredientViewPool.Count <= 0) return;
             foreach (var ingredientView in _ingredientViewPool)
             {
-                ingredientView.GameItemType = GameItemType.None;
-                ingredientView.gameObject.SetActive(false);
-                ingredientView.ItemName = string.Empty;
-                ingredientView.Amount = string.Empty;
+                ingredientView.ClearIngredient();
             }
         }
 
         private void SetupIngredientView(CraftingIngredient ingredient)
         {
             var ingredientView = GetEmptyIngredientView();
-            ingredientView.GameItemType = ingredient.Type;
-            ingredientView.gameObject.SetActive(true);
-            ingredientView.ItemName = ingredient.Type.ToString();
-            ingredientView.Amount = ingredient.Amount.ToString();
+            var sprite = _gameItemConfigModel.GetItemSprite(ingredient.Type);
+            ingredientView.SetupIngredient(ingredient, sprite);
         }
         
         private CraftingIngredientView GetEmptyIngredientView()

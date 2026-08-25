@@ -144,6 +144,7 @@ MonoBehaviour:
   _itemName: {fileID: 2337307932336132976}
   _amount: {fileID: 1892056941785566514}
   _gameItemType: 0
+  _gameItemSprite: {fileID: 789300749349854736}
 --- !u!1 &2726723350408050843
 GameObject:
   m_ObjectHideFlags: 0
