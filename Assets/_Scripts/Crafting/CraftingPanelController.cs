@@ -16,6 +16,7 @@ namespace _Scripts.Crafting
         private CraftingGameItemSelectionModel _gameItemSelectioNModel;
         private GameItemConfigModel _gameItemConfigModel;
         private List<CraftingIngredientView> _ingredientViewPool = new();
+        private InventoryModel _inventoryModel;
 
         public void Setup(CraftingPanelView craftingPanelView)
         {
@@ -23,6 +24,9 @@ namespace _Scripts.Crafting
             _categorySelectionModel = ServiceLocator.Resolve<CraftingCategorySelectionModel>();
             _gameItemSelectioNModel = ServiceLocator.Resolve<CraftingGameItemSelectionModel>();
             _gameItemConfigModel = ServiceLocator.Resolve<GameItemConfigModel>();
+            _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
+
+            _view.CraftButton.OnClickInteractable.SkipValueOnSubscribe(CraftItem);
 
             
             foreach (var category in (CraftingCategoryType[]) Enum.GetValues(typeof(CraftingCategoryType)))
@@ -45,6 +49,11 @@ namespace _Scripts.Crafting
             _categorySelectionModel.Selected.Combine(_gameItemSelectioNModel.Selected).Subscribe(UpdateCraftingPanel);
             
             _categorySelectionModel.Select(CraftingCategoryType.None);
+        }
+
+        private void CraftItem()
+        {
+            throw new NotImplementedException();
         }
 
         private void UpdateCraftingPanel((CraftingCategoryType category, GameItemType item) selectedItem)

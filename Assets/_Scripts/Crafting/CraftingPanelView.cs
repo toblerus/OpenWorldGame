@@ -1,4 +1,5 @@
 ﻿using _Scripts.Injection;
+using ReactiveCore.Runtime;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -36,6 +37,7 @@ namespace _Scripts.Crafting
         [SerializeField] private Transform _ingredientParent;
         [SerializeField] private GameObject _ingredientPrefab;
         [SerializeField] private Image _itemSprite;
+        [SerializeField] private ReactiveButton _craftButton;
 
         public GameObject CraftingPanel => _craftingPanel;
         public string ItemName
@@ -54,6 +56,8 @@ namespace _Scripts.Crafting
         {
             set => _itemSprite.sprite = value;
         }
+        
+        public ReactiveButton CraftButton => _craftButton;
 
         private void Start()
         {
