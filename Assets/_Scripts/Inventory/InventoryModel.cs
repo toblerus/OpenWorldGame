@@ -25,6 +25,43 @@ namespace _Scripts.Inventory
             return _inventory;
         }
 
+        public int GetItemAmount(GameItemType itemType)
+        {
+            var amount = 0;
+            foreach (var slot in _inventory)
+            {
+                if (IsEmpty(slot) || slot.Item.Name != itemType) continue;
+                amount += slot.Amount;
+            }
+
+            return amount;
+        }
+
+        public bool HasSpaceForItemAfterRemoving(GameItemConfig gameItemConfig, Dictionary<GameItemType, int> itemsToRemove)
+        {
+            if (gameItemConfig == null || gameItemConfig.MaxStack <= 0 || itemsToRemove == null) return false;
+
+            var remainingToRemove = new Dictionary<GameItemType, int>(itemsToRemove);
+            for (var i = 0; i < TotalSize; i++)
+            {
+                var slot = _inventory[i];
+                if (IsEmpty(slot)) return true;
+
+                var amount = slot.Amount;
+                if (remainingToRemove.TryGetValue(slot.Item.Name, out var requiredAmount))
+                {
+                    var removedAmount = Mathf.Min(amount, requiredAmount);
+                    amount -= removedAmount;
+                    remainingToRemove[slot.Item.Name] -= removedAmount;
+                }
+
+                if (amount == 0 || (slot.Item == gameItemConfig && amount < gameItemConfig.MaxStack))
+                    return true;
+            }
+
+            return false;
+        }
+
         public void AddItem(GameItemConfig gameItemConfig, int amount)
         {
             if (gameItemConfig == null || amount <= 0) return;
@@ -45,6 +82,19 @@ namespace _Scripts.Inventory
 
             if (TryFindItemSlot(gameItemConfig, out var index))
                 RemoveAt(index, amount);
+        }
+
+        public void RemoveItems(GameItemType itemType, int amount)
+        {
+            for (var i = 0; i < _inventory.Count && amount > 0; i++)
+            {
+                var slot = _inventory[i];
+                if (IsEmpty(slot) || slot.Item.Name != itemType) continue;
+
+                var removedAmount = Mathf.Min(slot.Amount, amount);
+                RemoveAt(i, removedAmount);
+                amount -= removedAmount;
+            }
         }
 
         public void RemoveAt(int index, int amount)

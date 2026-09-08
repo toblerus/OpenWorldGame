@@ -53,7 +53,35 @@ namespace _Scripts.Crafting
 
         private void CraftItem()
         {
-            throw new NotImplementedException();
+            var itemType = _gameItemSelectioNModel.Current;
+            if (itemType == GameItemType.None) return;
+
+            var config = _gameItemConfigModel.GetConfig(itemType);
+            if (config == null || config.MaxStack <= 0 || config.Ingredients is not { Count: > 0 }) return;
+
+            var requiredItems = new Dictionary<GameItemType, int>();
+            foreach (var ingredient in config.Ingredients)
+            {
+                if (ingredient == null || ingredient.Type == GameItemType.None || ingredient.Amount <= 0) return;
+
+                requiredItems.TryGetValue(ingredient.Type, out var amount);
+                if (ingredient.Amount > int.MaxValue - amount) return;
+                requiredItems[ingredient.Type] = amount + ingredient.Amount;
+            }
+
+            foreach (var requiredItem in requiredItems)
+            {
+                if (_inventoryModel.GetItemAmount(requiredItem.Key) < requiredItem.Value) return;
+            }
+
+            if (!_inventoryModel.HasSpaceForItemAfterRemoving(config, requiredItems)) return;
+
+            foreach (var requiredItem in requiredItems)
+            {
+                _inventoryModel.RemoveItems(requiredItem.Key, requiredItem.Value);
+            }
+
+            _inventoryModel.AddItem(config, 1);
         }
 
         private void UpdateCraftingPanel((CraftingCategoryType category, GameItemType item) selectedItem)
