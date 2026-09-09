@@ -57,15 +57,14 @@ namespace _Scripts.Inventory
             if (hoveredSlot != null && hoveredSlot != sourceSlot)
             {
                 _inventoryModel.SwapOrMove(sourceSlot.SlotIndex, hoveredSlot.SlotIndex);
-                _inventoryModel.ItemDragFinished.Emit();
             }
             else if (hoveredSlot == null)
             {
                 _inventoryModel.RemoveAt(sourceSlot.SlotIndex, _draggedCount);
                 SpawnItemDrop(_draggedItemConfig, _draggedCount);
-                _inventoryModel.ItemDragFinished.Emit();
             }
             ClearDrag();
+            _inventoryModel.ItemDragFinished.Emit();
         }
 
         public void HandleDrop(InventorySlotView targetSlot)
@@ -85,6 +84,10 @@ namespace _Scripts.Inventory
 
         private void ClearDrag()
         {
+            // A drop onto the source slot does not emit an inventory change.
+            var source = _inventoryModel.GetAllItems()[_sourceSlot.SlotIndex];
+            _sourceSlot.SetupGameItem(source.Item, source.Amount);
+            _sourceSlot.SetDragging(false);
             _draggedIcon.transform.parent.gameObject.SetActive(false);
             _draggedItemConfig = null;
             _draggedCount = 0;

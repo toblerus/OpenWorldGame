@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
 namespace _Scripts.Inventory
@@ -16,7 +16,7 @@ namespace _Scripts.Inventory
         {
             if (!_view.HasItem) return;
             InventoryDragModel.Instance.StartDrag(_view, _view.CurrentGameItemConfig, _view.CurrentAmount.ToString(), eventData.position);
-            _view.Clear();
+            _view.SetDragging(true);
         }
 
         public void OnDrag(PointerEventData eventData)

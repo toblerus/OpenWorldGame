@@ -50,6 +50,12 @@ namespace _Scripts.Inventory
             _itemAmount.text = "";
         }
 
+        public void SetDragging(bool isDragging)
+        {
+            _itemIcon.enabled = !isDragging && HasItem;
+            _itemAmount.enabled = !isDragging;
+        }
+
         public void OnBeginDrag(PointerEventData eventData)
         {
             _controller.OnBeginDrag(eventData);
