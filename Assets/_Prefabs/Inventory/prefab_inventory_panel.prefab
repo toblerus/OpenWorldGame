@@ -1958,6 +1958,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3315155686691164127}
     m_Modifications:
+    - target: {fileID: 274449576308365594, guid: 83cb3ee2ccd8f0740909ab0ee670106d, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c247881ced47c4349bb6e6e9ad772e1e, type: 3}
+    - target: {fileID: 274449576308365594, guid: 83cb3ee2ccd8f0740909ab0ee670106d, type: 3}
+      propertyPath: m_PixelsPerUnitMultiplier
+      value: 6.5
+      objectReference: {fileID: 0}
     - target: {fileID: 379736969141584727, guid: 83cb3ee2ccd8f0740909ab0ee670106d, type: 3}
       propertyPath: m_SizeDelta.y
       value: 0
