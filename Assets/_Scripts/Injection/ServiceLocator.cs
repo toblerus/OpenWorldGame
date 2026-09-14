@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace _Scripts.Injection
 {
@@ -7,6 +8,12 @@ namespace _Scripts.Injection
     {
         private static readonly Dictionary<Type, Func<object>> factories = new();
         private static readonly Dictionary<Type, object> singletons = new();
+
+        public static void BindView<TView>(TView prefab) where TView : MonoBehaviour
+        {
+            var factory = new ViewFactory<TView>(prefab);
+            BindSingleton(() => factory);
+        }
 
         public static void BindSingleton<T>(Func<T> factory = null) where T : class
         {
