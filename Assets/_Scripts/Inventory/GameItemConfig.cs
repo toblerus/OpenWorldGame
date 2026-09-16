@@ -13,6 +13,7 @@ namespace _Scripts.Inventory
         public CraftingCategoryType Category;
         public string Description;
         public Sprite Icon;
+        public int RandomDropRate;
         public int MaxStack;
         public GameObject Prefab;
         public bool ShowsInHand;

@@ -22,7 +22,7 @@ namespace _Scripts.InWorld.InWorldInteraction
             _config = gameItemConfigController.GetConfig(itemType);
             if(_config == null) return;
             
-            _model = new InWorldObjectInteractionModel(_config, Random.Range(1, 5));
+            _model = new InWorldObjectInteractionModel(_config, Random.Range(1, _config.RandomDropRate));
         }
 
         public void Interact()

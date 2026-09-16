@@ -8,5 +8,6 @@
         Plastic = 3,
         Scrap = 4,
         Campfire = 5,
+        Cactus = 6,
     }
 }
