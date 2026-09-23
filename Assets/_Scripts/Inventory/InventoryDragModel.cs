@@ -12,13 +12,13 @@ namespace _Scripts.Inventory
         [SerializeField] private Canvas _canvas;
         [SerializeField] private Image _draggedIcon;
         [SerializeField] private TextMeshProUGUI _draggedAmount;
-        [SerializeField] private GameObject _itemDropPrefab;
 
         private InventorySlotView _sourceSlot;
         private GameItemConfig _draggedItemConfig;
         private int _draggedCount;
         private bool _isDragging;
         private InventoryModel _inventoryModel;
+        private ItemDropSpawnerModel _itemDropSpawnerModel;
 
         private void Awake()
         {
@@ -29,6 +29,7 @@ namespace _Scripts.Inventory
         private void Start()
         {
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
+            _itemDropSpawnerModel = ServiceLocator.Resolve<ItemDropSpawnerModel>();
         }
 
         public void StartDrag(InventorySlotView sourceSlot, GameItemConfig itemConfig, string amountStr, Vector2 position)
@@ -61,7 +62,7 @@ namespace _Scripts.Inventory
             else if (hoveredSlot == null)
             {
                 _inventoryModel.RemoveAt(sourceSlot.SlotIndex, _draggedCount);
-                SpawnItemDrop(_draggedItemConfig, _draggedCount);
+                _itemDropSpawnerModel.Spawn(_draggedItemConfig, _draggedCount);
             }
             ClearDrag();
             _inventoryModel.ItemDragFinished.Emit();
@@ -73,13 +74,6 @@ namespace _Scripts.Inventory
             _inventoryModel.SwapOrMove(_sourceSlot.SlotIndex, targetSlot.SlotIndex);
             ClearDrag();
             _inventoryModel.ItemDragFinished.Emit();
-        }
-
-        public void SpawnItemDrop(GameItemConfig itemConfig, int amount)
-        {
-            var model = new ItemDropModel(itemConfig, amount);
-            var view = Instantiate(_itemDropPrefab, transform.position + transform.forward, Quaternion.identity);
-            view.GetComponent<ItemDropView>().Setup(model);
         }
 
         private void ClearDrag()

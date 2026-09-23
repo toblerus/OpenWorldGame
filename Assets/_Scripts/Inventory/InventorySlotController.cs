@@ -1,15 +1,20 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
+using _Scripts.Injection;
 
 namespace _Scripts.Inventory
 {
     public class InventorySlotController
     {
         private InventorySlotView _view;
+        private InventoryModel _inventoryModel;
+        private ItemDropSpawnerModel _itemDropSpawnerModel;
 
         public void Setup(InventorySlotView view)
         {
             _view = view;
+            _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
+            _itemDropSpawnerModel = ServiceLocator.Resolve<ItemDropSpawnerModel>();
         }
 
         public void OnBeginDrag(PointerEventData eventData)
@@ -33,8 +38,8 @@ namespace _Scripts.Inventory
             }
 
             Debug.LogError($"[InventorySlotController] Dropping item: {_view.CurrentGameItemConfig.name}, amount: {_view.CurrentAmount}");
-            InventoryDragModel.Instance.SpawnItemDrop(_view.CurrentGameItemConfig, _view.CurrentAmount);
-            _view.Clear();
+            _itemDropSpawnerModel.Spawn(_view.CurrentGameItemConfig, _view.CurrentAmount);
+            _inventoryModel.RemoveAt(_view.SlotIndex, _view.CurrentAmount);
         }
     }
 }

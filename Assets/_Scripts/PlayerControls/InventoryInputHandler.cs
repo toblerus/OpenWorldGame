@@ -34,7 +34,7 @@ namespace _Scripts.PlayerControls
 
         private void IsHeldIncrease()
         {
-            if (!_isHolding) return;
+            if (!_isHolding || _interactable == null) return;
             _currentInteractionHoldingDuration += _holdInteractionTimer.IntervalSeconds;
             
             _interactable.Progress(_currentInteractionHoldingDuration / _interactable.InteractionDuration);
@@ -44,12 +44,12 @@ namespace _Scripts.PlayerControls
             
             _interactable.Interact();
             _input.Player.InteractHold.Reset();
-            _interactable = null;
-            _isHolding = false;
+            CancelHoldInteraction();
         }
 
         private void StartHoldInteraction()
         {
+            CancelHoldInteraction();
             if (Camera.main != null)
             {
                 var camera = Camera.main;
@@ -57,9 +57,9 @@ namespace _Scripts.PlayerControls
                 if (Physics.Raycast(ray, out RaycastHit hit, 3f))
                 {
                     Debug.Log(hit.collider.gameObject.name);
-                    _interactable = hit.collider.transform.GetComponent<IHoldInteractable>();
+                    _interactable = hit.collider.GetComponentInParent<IHoldInteractable>();
 
-                    _isHolding = true;
+                    _isHolding = _interactable != null;
                 }
             }
         }
@@ -83,7 +83,7 @@ namespace _Scripts.PlayerControls
                 if (Physics.Raycast(ray, out RaycastHit hit, 3f))
                 {
                     Debug.Log(hit.collider.gameObject.name);
-                    var interactable = hit.collider.transform.parent?.GetComponent<IInteractable>();
+                    var interactable = hit.collider.GetComponentInParent<IInteractable>();
                     interactable?.Interact(this.transform.parent.gameObject);
                 }
             }

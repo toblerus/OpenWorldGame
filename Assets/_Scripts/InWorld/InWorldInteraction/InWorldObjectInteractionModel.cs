@@ -7,7 +7,7 @@ namespace _Scripts.InWorld.InWorldInteraction
         public GameItemConfig ItemConfig { get; set; }
         public int Amount { get; set; }
 
-        public InWorldObjectInteractionModel(GameItemConfig itemConfig, int amount)
+        public void Setup(GameItemConfig itemConfig, int amount)
         {
             ItemConfig = itemConfig;
             Amount = amount;

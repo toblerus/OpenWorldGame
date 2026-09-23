@@ -541,7 +541,6 @@ MonoBehaviour:
   _canvas: {fileID: 0}
   _draggedIcon: {fileID: 0}
   _draggedAmount: {fileID: 0}
-  _itemDropPrefab: {fileID: 5041633897354484497, guid: 7c75db4ff6640134ea1410d19ee48771, type: 3}
 --- !u!1 &8710288623385436229
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,10 +4,16 @@ namespace _Scripts.InWorld
 {
     public class InWorldObjectPersistenceController
     {
+        private readonly InWorldObjectPersistenceModel _model;
+
+        public InWorldObjectPersistenceController()
+        {
+            _model = ServiceLocator.Resolve<InWorldObjectPersistenceModel>();
+        }
+
         public void Setup(InWorldObjectPersistenceView inWorldObjectPersistenceView)
         {
-            var inWorldObjectPersistenceModel = ServiceLocator.Resolve<InWorldObjectPersistenceModel>();
-            inWorldObjectPersistenceModel.Register(inWorldObjectPersistenceView);
+            _model.Register(inWorldObjectPersistenceView);
         }
     }
 }

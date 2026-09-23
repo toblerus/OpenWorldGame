@@ -10,24 +10,34 @@ namespace _Scripts.InWorld.InWorldInteraction
         private InWorldObjectInteractionModel _model;
         private InWorldObjectInteractionView _view;
         private InventoryModel _inventoryModel;
-        private GameItemConfig _config;
+        private ItemDropSpawnerModel _itemDropSpawnerModel;
+        private bool _harvested;
 
         public void Setup(InWorldObjectInteractionView inWorldObjectInteractionView, GameItemType itemType)
         {
             _view = inWorldObjectInteractionView;
             _inventoryModel = ServiceLocator.Resolve<InventoryModel>();
+            _itemDropSpawnerModel = ServiceLocator.Resolve<ItemDropSpawnerModel>();
             
-            var gameItemConfigController = ServiceLocator.Resolve<GameItemConfigModel>();
+            var gameItemConfigModel = ServiceLocator.Resolve<GameItemConfigModel>();
             
-            _config = gameItemConfigController.GetConfig(itemType);
-            if(_config == null) return;
+            var config = gameItemConfigModel.GetConfig(itemType);
+            if(config == null) return;
             
-            _model = new InWorldObjectInteractionModel(_config, Random.Range(1, _config.RandomDropRate));
+            _model = ServiceLocator.Resolve<InWorldObjectInteractionModel>();
+            _model.Setup(config, Random.Range(1, Mathf.Max(1, config.RandomDropRate) + 1));
         }
 
-        public void Interact()
+        public bool Interact()
         {
-            _inventoryModel.AddItem(_model.ItemConfig, _model.Amount);
+            if (_harvested || _model == null) return false;
+            _harvested = true;
+
+            var remaining = _inventoryModel.AddItem(_model.ItemConfig, _model.Amount);
+            if (remaining > 0)
+                _itemDropSpawnerModel.Spawn(_model.ItemConfig, remaining, _view.transform.position + Vector3.up);
+
+            return true;
         }
     }
 }

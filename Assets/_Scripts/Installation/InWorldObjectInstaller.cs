@@ -12,6 +12,8 @@ namespace _Scripts.Installation
             ServiceLocator.BindSingleton<InWorldObjectPersistenceController>();
             ServiceLocator.BindSingletonNonLazy<InWorldObjectPersistenceModel>();
             ServiceLocator.BindTransient<InWorldObjectInteractionController>();
+            ServiceLocator.BindTransient<InWorldObjectInteractionModel>();
+            ServiceLocator.BindTransient<InWorldPopulationController>();
         }
 
         public void Uninstall()
@@ -20,6 +22,7 @@ namespace _Scripts.Installation
             ServiceLocator.Unbind<InWorldObjectPersistenceModel>();
             ServiceLocator.Unbind<InWorldObjectInteractionController>();
             ServiceLocator.Unbind<InWorldObjectInteractionModel>();
+            ServiceLocator.Unbind<InWorldPopulationController>();
         }
     }
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using _Scripts.Injection;
 using _Scripts.Installation;
+using _Scripts.InWorld;
 using UnityEngine;
 using UnityEngine.Scripting;
 
@@ -10,7 +11,7 @@ public class PrefabInstaller : MonoBehaviour, IInstaller
 {
     [SerializeField] private List<MonoBehaviour> _prefabs = new();
 
-    private readonly Dictionary<Type, Action> _unbindViews = new();
+    private readonly Dictionary<(Type Type, object Key), Action> _unbindViews = new();
 
     public void Install()
     {
@@ -18,24 +19,31 @@ public class PrefabInstaller : MonoBehaviour, IInstaller
 
         foreach (var prefab in _prefabs)
         {
-            
-            var viewType = prefab.GetType();
-            if (_unbindViews.ContainsKey(viewType))
+            if (prefab == null)
             {
-                Debug.LogWarning($"View {viewType.Name} is already installed by this PrefabInstaller.", this);
+                Debug.LogWarning("Missing prefab in PrefabInstaller.", this);
                 continue;
             }
 
-            // The Inspector list erases the concrete type; restore it for BindView<TView>.
-            bindView?.MakeGenericMethod(viewType).Invoke(this, new object[] { prefab });
+            var resource = prefab as InWorldResourceView;
+            var viewType = resource != null ? typeof(InWorldResourceView) : prefab.GetType();
+            object key = resource != null ? resource.ItemType : null;
+            if (_unbindViews.ContainsKey((viewType, key)))
+            {
+                Debug.LogWarning($"View {viewType.Name} with key '{key}' is already installed by this PrefabInstaller.", this);
+                continue;
+            }
+
+            // Resource prefabs share a view type and are distinguished by their item key.
+            bindView?.MakeGenericMethod(viewType).Invoke(this, new object[] { prefab, key });
         }
     }
 
     [Preserve]
-    private void BindView<TView>(TView prefab) where TView : MonoBehaviour
+    private void BindView<TView>(TView prefab, object key) where TView : MonoBehaviour
     {
-        ServiceLocator.BindView(prefab);
-        _unbindViews.Add(typeof(TView), ServiceLocator.Unbind<ViewFactory<TView>>);
+        ServiceLocator.BindView(prefab, key);
+        _unbindViews.Add((typeof(TView), key), () => ServiceLocator.Unbind<ViewFactory<TView>>(key));
     }
 
     public void Uninstall()

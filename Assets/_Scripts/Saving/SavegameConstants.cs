@@ -8,5 +8,7 @@
         public const string HungerStatus = "HungerStatus";
         public const string ThirstStatus = "ThirstStatus";
         public const string InWorldObjects = "InWorldObjects";
+        public const string InWorldPopulation = "InWorldPopulation";
+        public const string HarvestedObjects = "HarvestedObjects";
     }
 }

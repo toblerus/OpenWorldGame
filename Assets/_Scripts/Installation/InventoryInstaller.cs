@@ -8,9 +8,12 @@ namespace _Scripts.Installation
 {
     public class InventoryInstaller : MonoBehaviour, IInstaller
     {
+        [SerializeField] private Transform _dropOrigin;
+
         public void Install()
         {
             ServiceLocator.BindSingleton<InventoryModel>();
+            ServiceLocator.BindSingleton(() => new ItemDropSpawnerModel(_dropOrigin));
             ServiceLocator.BindSingleton<HandItemController>();
             ServiceLocator.BindSingleton<ItemPlacementController>();
         }
@@ -18,6 +21,7 @@ namespace _Scripts.Installation
         public void Uninstall()
         {
             ServiceLocator.Unbind<InventoryModel>();
+            ServiceLocator.Unbind<ItemDropSpawnerModel>();
             ServiceLocator.Unbind<HandItemController>();
             ServiceLocator.Unbind<ItemPlacementController>();
         }

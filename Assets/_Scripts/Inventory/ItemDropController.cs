@@ -18,12 +18,16 @@ namespace _Scripts.Inventory
 
         public void Interact(GameObject interactor)
         {
-            if (_inventoryModel != null)
+            if (_inventoryModel != null && _model.Amount > 0)
             {
-                _inventoryModel.AddItem(_model.ItemConfig, _model.Amount);
-                Object.Destroy(_view.gameObject);
+                _model.Amount = _inventoryModel.AddItem(_model.ItemConfig, _model.Amount);
+                if (_model.Amount == 0)
+                {
+                    _view.gameObject.SetActive(false);
+                    Object.Destroy(_view.gameObject);
+                }
             }
-            else
+            else if (_inventoryModel == null)
             {
                 Debug.Log($"No controller found in {interactor.name}");
             }

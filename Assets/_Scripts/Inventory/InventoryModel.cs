@@ -62,18 +62,23 @@ namespace _Scripts.Inventory
             return false;
         }
 
-        public void AddItem(GameItemConfig gameItemConfig, int amount)
+        // Returns the amount that did not fit in the inventory or hotbar.
+        public int AddItem(GameItemConfig gameItemConfig, int amount)
         {
-            if (gameItemConfig == null || amount <= 0) return;
+            if (amount <= 0) return 0;
+            if (gameItemConfig == null || gameItemConfig.MaxStack <= 0) return amount;
 
-            if (!TryGetSlotForOrEmpty(gameItemConfig, out var index))
-                index = _inventory.Count;
+            while (amount > 0 && TryGetSlotForOrEmpty(gameItemConfig, out var index))
+            {
+                var current = _inventory[index];
+                var currentAmount = current.Item == null ? 0 : current.Amount;
+                var addedAmount = Mathf.Min(amount, gameItemConfig.MaxStack - currentAmount);
+                SetSlot(index, gameItemConfig, currentAmount + addedAmount);
+                amount -= addedAmount;
+                NotifySlotModified(index);
+            }
 
-            EnsureSize(index + 1);
-            var current = _inventory[index];
-            var newAmount = current.Item == null ? amount : current.Amount + amount;
-            SetSlot(index, gameItemConfig, newAmount);
-            NotifySlotModified(index);
+            return amount;
         }
 
         public void RemoveItem(GameItemConfig gameItemConfig, int amount)
