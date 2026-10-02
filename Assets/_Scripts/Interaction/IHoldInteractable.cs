@@ -1,9 +1,7 @@
 ﻿namespace _Scripts.Interaction
 {
-    public interface IHoldInteractable
+    public interface IHoldInteractable : IInteractable
     {
-        void Interact();
-        
         void Progress(float progress);
         float InteractionDuration { get; }
     }

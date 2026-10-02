@@ -1,4 +1,4 @@
-﻿using _Scripts.Injection;
+using _Scripts.Injection;
 using _Scripts.Interaction;
 using System;
 using _Scripts.Inventory;
@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace _Scripts.InWorld.InWorldInteraction
 {
-    public class InWorldObjectInteractionView : MonoBehaviour, IHoldInteractable
+    public class InWorldHarvestInteractionView : MonoBehaviour, IHoldInteractable
     {
-        private InWorldObjectInteractionController _controller;
+        private InWorldHarvestInteractionController _controller;
         public event Action Harvested;
 
         [SerializeField] private float _interactionDuration;
@@ -19,13 +19,13 @@ namespace _Scripts.InWorld.InWorldInteraction
 
         private void Start()
         {
-            _controller = ServiceLocator.Resolve<InWorldObjectInteractionController>();
-            _controller.Setup(this, _itemType);
+            _controller = ServiceLocator.Resolve<InWorldHarvestInteractionController>();
+            _controller.Setup(this);
         }
         
-        public void Interact()
+        public void Interact(GameObject interactor)
         {
-            if (_controller == null || !_controller.Interact()) return;
+            if (!isActiveAndEnabled || _controller == null || !_controller.TryInteract()) return;
             enabled = false;
             Harvested?.Invoke();
         }

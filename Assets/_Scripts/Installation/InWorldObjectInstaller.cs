@@ -11,8 +11,9 @@ namespace _Scripts.Installation
         {
             ServiceLocator.BindSingleton<InWorldObjectPersistenceController>();
             ServiceLocator.BindSingletonNonLazy<InWorldObjectPersistenceModel>();
-            ServiceLocator.BindTransient<InWorldObjectInteractionController>();
-            ServiceLocator.BindTransient<InWorldObjectInteractionModel>();
+            ServiceLocator.BindTransient<InWorldHarvestInteractionController>();
+            ServiceLocator.BindTransient<InWorldHarvestInteractionModel>();
+            ServiceLocator.BindTransient<InWorldStorageInteractionController>();
             ServiceLocator.BindTransient<InWorldPopulationController>();
         }
 
@@ -20,8 +21,9 @@ namespace _Scripts.Installation
         {
             ServiceLocator.Unbind<InWorldObjectPersistenceController>();
             ServiceLocator.Unbind<InWorldObjectPersistenceModel>();
-            ServiceLocator.Unbind<InWorldObjectInteractionController>();
-            ServiceLocator.Unbind<InWorldObjectInteractionModel>();
+            ServiceLocator.Unbind<InWorldHarvestInteractionController>();
+            ServiceLocator.Unbind<InWorldHarvestInteractionModel>();
+            ServiceLocator.Unbind<InWorldStorageInteractionController>();
             ServiceLocator.Unbind<InWorldPopulationController>();
         }
     }

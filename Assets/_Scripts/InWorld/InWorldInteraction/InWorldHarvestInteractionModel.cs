@@ -1,8 +1,8 @@
-﻿using _Scripts.Inventory;
+using _Scripts.Inventory;
 
 namespace _Scripts.InWorld.InWorldInteraction
 {
-    public class InWorldObjectInteractionModel
+    public class InWorldHarvestInteractionModel
     {
         public GameItemConfig ItemConfig { get; set; }
         public int Amount { get; set; }

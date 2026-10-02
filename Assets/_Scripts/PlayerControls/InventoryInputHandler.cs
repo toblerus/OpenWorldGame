@@ -42,7 +42,7 @@ namespace _Scripts.PlayerControls
             
             if (!(_currentInteractionHoldingDuration >= _interactable.InteractionDuration)) return;
             
-            _interactable.Interact();
+            _interactable.Interact(transform.parent.gameObject);
             _input.Player.InteractHold.Reset();
             CancelHoldInteraction();
         }
@@ -84,7 +84,9 @@ namespace _Scripts.PlayerControls
                 {
                     Debug.Log(hit.collider.gameObject.name);
                     var interactable = hit.collider.GetComponentInParent<IInteractable>();
-                    interactable?.Interact(this.transform.parent.gameObject);
+                    // Hold interactions also implement IInteractable, but must finish their timer first.
+                    if (interactable != null && !(interactable is IHoldInteractable))
+                        interactable.Interact(transform.parent.gameObject);
                 }
             }
         }

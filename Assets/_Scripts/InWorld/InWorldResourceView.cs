@@ -7,7 +7,7 @@ namespace _Scripts.InWorld
 {
     public class InWorldResourceView : MonoBehaviour
     {
-        [SerializeField] private InWorldObjectInteractionView _interactionView;
+        [SerializeField] private InWorldHarvestInteractionView _interactionView;
         private InWorldObjectPersistenceModel _persistenceModel;
 
         public string Id { get; private set; }

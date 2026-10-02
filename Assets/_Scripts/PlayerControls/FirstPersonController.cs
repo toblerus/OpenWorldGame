@@ -43,7 +43,7 @@ namespace _Scripts.PlayerControls
             _inputActions.Player.Look.performed += ctx => _lookInput = ctx.ReadValue<Vector2>();
             _inputActions.Player.Look.canceled += ctx => _lookInput = Vector2.zero;
             _inputActions.Player.Jump.performed += ctx => Jump();
-            _inputActions.Player.Inventory.performed += ctx => OpenInventory();
+            _inputActions.Player.Inventory.performed += ctx => ToggleInventory();
             _inputActions.Player.Scroll.performed += ctx => OnScroll(ctx.ReadValue<Vector2>().y);
             _inputActions.Player.Hotbar.performed += ctx => SelectSlot(ctx);
             _inputActions.Player.Fire.performed += ctx => LeftClickPerformed(ctx);
@@ -118,7 +118,13 @@ namespace _Scripts.PlayerControls
             }
         }
 
-        private void OpenInventory()
+        public void OpenInventory()
+        {
+            if (!_panelService.IsPanelOpen<InventoryPanelView>())
+                _panelService.OpenPanel<InventoryPanelView>();
+        }
+
+        private void ToggleInventory()
         {
             if (_panelService.IsPanelOpen<InventoryPanelView>())
             {
