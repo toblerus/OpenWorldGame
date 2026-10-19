@@ -3,6 +3,7 @@ using _Scripts.Inventory;
 using _Scripts.Inventory.Hotbar;
 using _Scripts.Inventory.ItemPlacement;
 using _Scripts.PanelCore;
+using _Scripts.Storage;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -33,6 +34,7 @@ namespace _Scripts.PlayerControls
         //References
         private HotBarController _hotbar;
         private ItemPlacementController _itemPlacementController;
+        private StorageInteractionModel _storageInteractionModel;
 
         private void Awake()
         {
@@ -58,6 +60,7 @@ namespace _Scripts.PlayerControls
         {
             _hotbar = ServiceLocator.Resolve<HotBarController>();
             _itemPlacementController = ServiceLocator.Resolve<ItemPlacementController>();
+            _storageInteractionModel = ServiceLocator.Resolve<StorageInteractionModel>();
             
             _panelService.IsAnyPanelOpen
                 .Subscribe(isOpen =>
@@ -129,6 +132,7 @@ namespace _Scripts.PlayerControls
             if (_panelService.IsPanelOpen<InventoryPanelView>())
             {
                 _panelService.ClosePanel<InventoryPanelView>();
+                _storageInteractionModel.SetIsInteractingWithStorage(false);
             }
             else
             {

@@ -3,6 +3,7 @@ using System.Linq;
 using _Scripts.Injection;
 using _Scripts.Inventory.ItemConfigs;
 using _Scripts.Saving;
+using _Scripts.Storage;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -14,10 +15,12 @@ namespace _Scripts.Inventory
         private InventoryModel _inventoryModel;
         private int _hotBarOffset = 15;
         private GameItemConfigModel _gameItemConfigModel;
+        private StorageInteractionModel _storageInteractionModel;
 
         private void Start()
         {
             _gameItemConfigModel = ServiceLocator.Resolve<GameItemConfigModel>();
+            _storageInteractionModel = ServiceLocator.Resolve<StorageInteractionModel>();
             Setup();
             LoadInventory();
         }
@@ -45,6 +48,8 @@ namespace _Scripts.Inventory
             });
             _inventoryModel.InventorySlotModified.SkipValueOnSubscribe(_ => { SaveInventory(); });
             _inventoryModel.ItemDragFinished.SkipValueOnSubscribe(SaveInventory);
+            
+            _storageInteractionModel.IsInteractingWithStorage.SkipValueOnSubscribe(value => _view.StorageSlotsParent.SetActive(value));
         }
 
         private void LoadInventory()

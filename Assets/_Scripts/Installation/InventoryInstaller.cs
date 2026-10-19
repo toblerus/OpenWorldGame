@@ -2,6 +2,7 @@
 using _Scripts.Inventory;
 using _Scripts.Inventory.HandItem;
 using _Scripts.Inventory.ItemPlacement;
+using _Scripts.Storage;
 using UnityEngine;
 
 namespace _Scripts.Installation
@@ -16,6 +17,9 @@ namespace _Scripts.Installation
             ServiceLocator.BindSingleton(() => new ItemDropSpawnerModel(_dropOrigin));
             ServiceLocator.BindSingleton<HandItemController>();
             ServiceLocator.BindSingleton<ItemPlacementController>();
+            
+            //Storage
+            ServiceLocator.BindSingleton<StorageInteractionModel>();
         }
 
         public void Uninstall()
@@ -24,6 +28,9 @@ namespace _Scripts.Installation
             ServiceLocator.Unbind<ItemDropSpawnerModel>();
             ServiceLocator.Unbind<HandItemController>();
             ServiceLocator.Unbind<ItemPlacementController>();
+            
+            //Storage
+            ServiceLocator.Unbind<StorageInteractionModel>();
         }
     }
 }

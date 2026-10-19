@@ -208,6 +208,7 @@ MonoBehaviour:
   - {fileID: 4238272090826823476}
   - {fileID: 7622205235288452970}
   - {fileID: 523884270589614728}
+  _storageSlotsParent: {fileID: 8530379860247529983}
 --- !u!114 &2069775085237750180
 MonoBehaviour:
   m_ObjectHideFlags: 0

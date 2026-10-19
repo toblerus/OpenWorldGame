@@ -8,6 +8,9 @@ namespace _Scripts.Inventory
     {
         [SerializeField] private List<InventorySlotView> _inventorySlotViews;
         public List<InventorySlotView> InventorySlotViews => _inventorySlotViews;
+        
+        [SerializeField] private GameObject _storageSlotsParent;
+        public GameObject StorageSlotsParent => _storageSlotsParent;
 
         public List<SlotData> GetSlotData()
         {
